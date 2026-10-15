@@ -1,5 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
-import type { Expense, ExpenseInput } from './schedule'
+import type { Expense, ExpenseInput, Milestone, MilestoneInput } from './schedule'
 
 // Fetch all supported rows; never silently calculate totals from a truncated API response.
 export async function loadRows<T>(client: SupabaseClient, table: string, projectId: string, order: string): Promise<T[]> {
@@ -24,4 +24,12 @@ export async function deleteRow(client: SupabaseClient, table: 'expenses' | 'mil
   const { data, error } = await client.from(table).delete().eq('id', id).eq('project_id', projectId).select('id')
   if (error) throw error
   if (!data?.length) throw new Error('The entry could not be removed. Reload and try again.')
+}
+
+export const loadMilestones = (client: SupabaseClient, projectId: string) => loadRows<Milestone>(client, 'milestones', projectId, 'expected_receipt_date')
+export async function saveMilestone(client: SupabaseClient, projectId: string, input: MilestoneInput, id?: string): Promise<Milestone> {
+  const query = id ? client.from('milestones').update(input).eq('id', id).eq('project_id', projectId) : client.from('milestones').insert({ ...input, project_id: projectId })
+  const { data, error } = await query.select().single()
+  if (error) throw error
+  return data as Milestone
 }
