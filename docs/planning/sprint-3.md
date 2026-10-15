@@ -37,7 +37,13 @@ Additional tests cover cent precision, earliest versus deepest shortage, unrecov
 
 Local browser verification used a disposable account and project against the local Supabase backend, with the real app components and API. A $10,000 project with $2,000 deposit, $3,000 Materials expense on 5 November and $8,000 receipt on 15 November showed a $1,000 maximum gap on 5 November. Saving $1,000 starting cash removed the gap and increased closing cash from $7,000 to $8,000. Reloading and reopening retained that result. Keyboard movement on the chart exposed the exact negative balance. Layouts were inspected at 390px, 768px and 1440px with document width matching viewport width. Lint, TypeScript and production build pass.
 
-The browser example has only $3,000 of costs; the reference examples additionally include a later $4,000 expense. Their different closing totals are intentional. Synthetic examples do not fulfil the pending requirement for independently checked real customer projects. Hosted authenticated acceptance and Cloudflare deployment of Sprint 3 are not yet verified.
+The browser example has only $3,000 of costs; the reference examples additionally include a later $4,000 expense. Their different closing totals are intentional. Synthetic examples do not fulfil the pending requirement for independently checked real customer projects. Full hosted authenticated acceptance remains pending.
+
+## Hosted preview
+
+The preview is https://sprint-3-project-payment-planner.skorsengkuang.workers.dev. The first deployment of `569c6ca` succeeded without Supabase build variables and displayed workspace setup instructions. Each Worker Preview has its own build configuration; the Sprint 2 values were not inherited. Added the existing hosted project's public URL and publishable key under the Sprint 3 preview's Settings → Builds → Variables and secrets and verified persistence after refreshing settings. Added only the exact Sprint 3 origin to the hosted Supabase redirect allowlist, retaining the production site URL and other redirects.
+
+Rebuild `8f17657e-b42d-408f-aeed-9b9e3ef3493e` succeeded for `569c6ca` with the public connection values and generated assets matching the local production build. Reloading the deployed preview now shows Google and email sign-in instead of setup instructions. This verifies frontend configuration and rendering, not the complete hosted authenticated project workflow. The preview shares the existing hosted backend.
 
 ## Later work
 

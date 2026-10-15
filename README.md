@@ -6,6 +6,8 @@ Plan fixed-price projects before agreeing to client payment terms. The app suppo
 
 **Sprint 2 preview:** [Try expenses and payment milestones](https://sprint-2-project-payment-planner.skorsengkuang.workers.dev/)
 
+**Sprint 3 preview:** [Try cash forecasts and funding gaps](https://sprint-3-project-payment-planner.skorsengkuang.workers.dev/)
+
 ## Current progress
 
 Sprint 1 is merged into `main`. Sprint 2 adds expenses, deposits, milestones, receipt-date calculations and payment-total checks. Sprint 3 is implemented locally on `sprint-3`, based on Sprint 2; it adds cash forecasting, funding-gap detection and an interactive balance chart. Google sign-in requires the provider setup described below.
@@ -117,7 +119,7 @@ Original documents in `Project Plan/` remain unchanged.
 
 ## Version control
 
-Sprint 1 is merged. Current development is on `sprint-3`, based on Sprint 2; production continues to deploy from `main`. Sprint 3 has not yet been verified on Cloudflare.
+Sprint 1 is merged. Current development is on `sprint-3`, based on Sprint 2; production continues to deploy from `main`. Sprint 3 has a separate Cloudflare preview; its full hosted authenticated acceptance remains pending.
 
 ```sh
 git switch sprint-3
