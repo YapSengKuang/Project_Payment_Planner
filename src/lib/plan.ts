@@ -87,8 +87,12 @@ export function suggestDeposit(baseline: PlanBaseline, settings: PlanSettings) {
   const changes = new Map(settings.changes.map(change => [change.id, { ...change }]))
   function changeAmount(row: Milestone, amount: number) {
     const original = baseline.milestones.find(item => item.id === row.id)!
+    const previousReason = changes.get(row.id)?.reason.trim()
+    const allocationReason = `Move ${money(moved)} from later milestones into the earlier deposit to reduce the funding gap; total project receipts stay unchanged.`
+    const reason = previousReason ? `${previousReason} ${allocationReason}` : allocationReason
+    if (reason.length > 500) throw new Error('The suggestion would exceed the change-reason limit. Shorten the existing explanation or adjust the payments manually; your proposal is unchanged.')
     changes.set(row.id, { id: row.id, amount_cents: amount, receipt_date: changes.get(row.id)?.receipt_date ?? original.expected_receipt_date,
-      reason: `Move ${money(moved)} from later milestones into the earlier deposit to reduce the funding gap; total project receipts stay unchanged.` })
+      reason })
   }
   changeAmount(deposit, deposit.amount_cents + moved)
   let remaining = moved

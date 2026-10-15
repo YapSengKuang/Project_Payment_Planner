@@ -43,3 +43,15 @@ it('does not claim a later deposit can cover an earlier shortage, and rejects in
   expect(() => comparePlan(baseline, { ...settings, changes: [{ ...change, reason: '' }] })).toThrow(/Explain/)
   expect(() => comparePlan(baseline, { ...settings, changes: [{ ...change, id: 'unknown' }] })).toThrow(/unknown/)
 })
+
+it('preserves existing timing explanations when suggesting an amount adjustment', () => {
+  const settings = { ...initialSettings(baseline.project.price_cents), changes: [
+    { id: 'd', amount_cents: 200000, receipt_date: '2026-10-31', reason: 'Client agreed to pay the deposit before work starts.' },
+  ] }
+  const result = suggestDeposit(baseline, settings)
+  expect(result.settings.changes.find(row => row.id === 'd')).toMatchObject({ receipt_date: '2026-10-31', amount_cents: 300000 })
+  expect(result.settings.changes.find(row => row.id === 'd')?.reason).toContain(settings.changes[0].reason)
+  const longReason = { ...settings, changes: [{ ...settings.changes[0], reason: 'x'.repeat(500) }] }
+  expect(() => suggestDeposit(baseline, longReason)).toThrow(/proposal is unchanged/)
+  expect(longReason.changes[0].amount_cents).toBe(200000)
+})
