@@ -29,3 +29,11 @@ it('keeps invoice timing independent and requires a reason for overrides', () =>
   expect(validateMilestone({ ...payment, receipt_override_date: '2026-11-20', receipt_override_reason: ' Client agreed date ' }).input).toMatchObject({ receipt_override_date: '2026-11-20', receipt_override_reason: 'Client agreed date' })
   expect(validateMilestone({ ...payment, receipt_override_reason: 'Old reason' }).input?.receipt_override_reason).toBeNull()
 })
+
+import { paymentSummary } from './schedule'
+it('marks the reference deposit and milestone schedule complete only when totals match exactly', () => {
+  expect(paymentSummary(1000000, [{ amount_cents: 200000 }, { amount_cents: 800000 }])).toEqual({ receipts: 1000000, difference: 0, complete: true })
+  expect(paymentSummary(1000000, [{ amount_cents: 200000 }])).toMatchObject({ difference: 800000, complete: false })
+  expect(paymentSummary(1000000, [{ amount_cents: 1000001 }])).toMatchObject({ difference: -1, complete: false })
+  expect(paymentSummary(1000000, [])).toMatchObject({ receipts: 0, complete: false })
+})

@@ -58,3 +58,9 @@ export function validateMilestone(values: MilestoneValues): { errors: Errors<Mil
     invoice_date: values.invoice_date, payment_terms_days: Number(values.payment_terms_days),
     receipt_override_date: values.receipt_override_date || null, receipt_override_reason: values.receipt_override_date ? values.receipt_override_reason.trim() : null } }
 }
+
+export function paymentSummary(priceCents: number, payments: { amount_cents: number }[]) {
+  const receipts = totalCents(payments)
+  const difference = priceCents - receipts
+  return { receipts, difference, complete: payments.length > 0 && difference === 0 }
+}
