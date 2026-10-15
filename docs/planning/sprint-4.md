@@ -44,3 +44,10 @@ The Sprint 4 branch preview needs its own public Supabase build variables and ex
 ## Preview deployment evidence
 
 Pushed `sprint-4` with separate feature commits. GitHub application CI and the initial Cloudflare build passed for `6ea371c`. Configured the Sprint 4 preview's own public Supabase URL/key, verified the subsequent build received both variables, and added its exact origin to Supabase's authentication redirect allowlist. The configured rebuild `2dde6632-7eae-42fa-aead-fabfa4dd1816` succeeded for `6ea371c` and generated the same application asset as the local build. The preview opens at https://sprint-4-project-payment-planner.skorsengkuang.workers.dev and was visually checked to show Google and email sign-in rather than workspace setup instructions. A read-only anonymous request to the hosted revision table returned HTTP 401. Full hosted authenticated revision save/reopen and a visual check of a saved PDF remain user acceptance items.
+
+
+## Feature showcase data
+
+Added an owner-only Load demo projects action with two editable sample projects and four immutable plan revisions. The dataset exercises expenses, deposit/milestone terms, receipt overrides, starting cash, draft allocation warnings, funding gaps, proposed payment changes, deposit caps, receipt-delay/cost scenarios, revision reopening/derivation and print-ready complete plans. Repeat calls preserve edits and reuse IDs; concurrent calls serialize per account. All sample rows and versions are created in one database transaction.
+
+Validation: 61 unit/component tests, lint, production build and real local Supabase integration checks pass. The integration check verifies scenario gaps ($2,500 / $0 / $1,000 / $3,300), closing balances, incomplete allocation, concurrent calls, retries, preserved edits, anonymous denial and account isolation. The new migration follows the existing SQL-editor hosted rollout workflow; CLI migration history still needs reconciliation before a future CLI push.

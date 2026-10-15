@@ -10,6 +10,16 @@ Plan fixed-price projects before agreeing to client payment terms. The app suppo
 
 **Sprint 4 preview:** [Try proposals, scenarios and saved revisions](https://sprint-4-project-payment-planner.skorsengkuang.workers.dev/)
 
+## Try every feature with demo data
+
+After signing in, click **Load demo projects** on the project list. It creates two private, editable fictional projects:
+
+- **Website redesign:** three expenses, a deposit, two milestones, invoice terms and an explained receipt override. Its original forecast has a $2,500 maximum funding gap.
+- **Plan & compare:** open the four saved revisions to compare original terms, a larger deposit (no gap), a capped deposit ($1,000 gap), and seven-day receipt delays with 10% higher costs ($3,300 gap). Edit a proposal, save another revision and try Print / Save as PDF.
+- **Incomplete draft:** starting cash and a partially allocated payment schedule demonstrate draft warnings and $6,800 still to allocate.
+
+Dates start from your local calendar day on first creation. Repeated clicks reopen the same projects and preserve your edits. Existing projects are untouched. These are synthetic examples, not customer validation. The additive `202610160005_demo_projects.sql` migration is required; creation is atomic and restricted to the signed-in owner.
+
 ## Current progress
 
 Sprint 1 is merged into `main`. Sprint 2 adds expenses, deposits, milestones, receipt-date calculations and payment-total checks. Sprint 3 adds cash forecasting, funding-gap detection and an interactive balance chart. Sprint 4 is implemented on `sprint-4` from merged `main`, adding payment proposals, constrained deposit suggestions, scenarios, immutable named revisions and printable plans. Google sign-in requires the provider setup described below.

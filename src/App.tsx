@@ -3,6 +3,8 @@ import type { Session } from '@supabase/supabase-js'
 import Auth from './components/Auth'
 import ProjectForm from './components/ProjectForm'
 import ProjectDetails from './components/ProjectDetails'
+import DemoProjects from './components/DemoProjects'
+import { loadDemoProjects } from './lib/demo-api'
 import { supabase } from './lib/supabase'
 import { displayDate, money } from './lib/project'
 import type { Project, ProjectInput } from './lib/project'
@@ -59,6 +61,8 @@ function Workspace({ session }: { session: Session }) {
   const [editor, setEditor] = useState<Project | 'new' | null>(null)
   const [retry, setRetry] = useState(0)
   const [signingOut, setSigningOut] = useState(false)
+  const [creatingDemo, setCreatingDemo] = useState(false)
+  const demoInFlight = useRef(false)
   const alive = useRef(true)
   const owner = session.user.id
   useEffect(() => {
@@ -80,6 +84,19 @@ function Workspace({ session }: { session: Session }) {
     setProjects(existing => [saved, ...existing.filter(p => p.id !== saved.id)])
     setEditor(editor === 'new' ? null : saved); setNotice('Project saved.'); setFailure('')
   }
+  async function loadDemo() {
+    if (demoInFlight.current) return
+    demoInFlight.current = true; setCreatingDemo(true); setFailure(''); setNotice('')
+    try {
+      const examples = await loadDemoProjects(supabase!)
+      if (!alive.current) return
+      setProjects(existing => [...examples, ...existing.filter(row => !examples.some(example => example.id === row.id))])
+      setEditor(examples[0])
+      setNotice('Demo projects ready. Open Forecast for the $2,500 original gap, then Plan & compare to explore the four saved examples. The incomplete draft is in All projects.')
+    } catch {
+      if (alive.current) setFailure('Demo projects could not be loaded. Check your connection and try Load demo projects again. Existing projects are unchanged; retries do not create duplicate examples.')
+    } finally { demoInFlight.current = false; if (alive.current) setCreatingDemo(false) }
+  }
   async function signOut() {
     setSigningOut(true); setFailure('')
     // Clear private UI immediately; the parent unmounts this workspace after auth changes.
@@ -91,13 +108,14 @@ function Workspace({ session }: { session: Session }) {
       setFailure('Sign-out failed. Please try again.'); setLoading(true); setRetry(value => value + 1)
     } finally { if (alive.current) setSigningOut(false) }
   }
-  return <><div className="account-strip"><span className="account-email">{session.user.email}</span><button className="text-button" disabled={signingOut} onClick={() => void signOut()}>{signingOut ? 'Signing out…' : 'Sign out'}</button></div>
+  return <><div className="account-strip"><span className="account-email">{session.user.email}</span><button className="text-button" disabled={signingOut || creatingDemo} onClick={() => void signOut()}>{signingOut ? 'Signing out…' : 'Sign out'}</button></div>
     {notice && <p role="status" className="notice success">{notice}</p>}
-    {failure && <div role="alert" className="notice error">{failure} <button className="text-button" onClick={() => { setLoading(true); setFailure(''); setRetry(v => v + 1) }}>Retry</button></div>}
+    {failure && <div role="alert" className="notice error">{failure} <button className="text-button" disabled={creatingDemo} onClick={() => { setLoading(true); setFailure(''); setRetry(v => v + 1) }}>Retry</button></div>}
     {editor ? editor === 'new' ? <ProjectForm onSave={save} onCancel={() => setEditor(null)}/> : <ProjectDetails key={editor.id} client={supabase!} project={editor} onSave={save} onBack={() => { setEditor(null); setNotice('') }}/> : <>
-    <section className="overview"><div><p className="eyebrow">YOUR PROJECT BOOK</p><h2>Start organised. Stay ahead.</h2><p>Set up a project with its price, dates and available cash.</p></div><button className="button" disabled={signingOut || loading} onClick={() => { setEditor('new'); setNotice('') }}>New project <span aria-hidden="true">＋</span></button></section>
+    <DemoProjects busy={creatingDemo} disabled={loading || signingOut} onLoad={() => void loadDemo()}/>
+    <section className="overview"><div><p className="eyebrow">YOUR PROJECT BOOK</p><h2>Start organised. Stay ahead.</h2><p>Set up a project with its price, dates and available cash.</p></div><button className="button" disabled={signingOut || creatingDemo || loading} onClick={() => { setEditor('new'); setNotice('') }}>New project <span aria-hidden="true">＋</span></button></section>
     <section className="panel project-list" aria-labelledby="list-title"><div className="section-top"><h2 id="list-title">All projects <span className="count">{projects.length}</span></h2><span className="muted">Most recently updated</span></div>
-      {loading ? <p role="status" className="empty-state">Loading your projects…</p> : projects.length === 0 ? <div className="empty-state"><span className="empty-symbol" aria-hidden="true">＋</span><h3>{failure ? 'Projects unavailable' : 'Your next project starts here'}</h3><p>{failure ? 'Retry loading your projects above.' : 'Add the essentials now. Build your payment plan as you go.'}</p>{!failure && <button className="button secondary" disabled={signingOut || loading} onClick={() => setEditor('new')}>Create your first project ↗</button>}</div> : <div>{projects.map(project => <article className="project-row" key={project.id}><div className="project-icon" aria-hidden="true">{project.name.charAt(0).toUpperCase()}</div><div className="project-title"><h3>{project.name}</h3><p>{project.client_name}</p></div><div className="project-dates"><small>PROJECT DATES</small><p>{displayDate(project.start_date)} – {displayDate(project.end_date)}</p></div><div className="project-price"><small>PROJECT PRICE</small><p>{money(project.price_cents)}</p></div><button className="button secondary" disabled={signingOut || loading} onClick={() => { setEditor(project); setNotice('') }}>Open<span className="sr-only"> {project.name}</span> ↗</button></article>)}</div>}
+      {loading ? <p role="status" className="empty-state">Loading your projects…</p> : projects.length === 0 ? <div className="empty-state"><span className="empty-symbol" aria-hidden="true">＋</span><h3>{failure ? 'Projects unavailable' : 'Your next project starts here'}</h3><p>{failure ? 'Retry loading your projects above.' : 'Add the essentials now. Build your payment plan as you go.'}</p>{!failure && <button className="button secondary" disabled={signingOut || creatingDemo || loading} onClick={() => setEditor('new')}>Create your first project ↗</button>}</div> : <div>{projects.map(project => <article className="project-row" key={project.id}><div className="project-icon" aria-hidden="true">{project.name.charAt(0).toUpperCase()}</div><div className="project-title"><h3>{project.name}</h3><p>{project.client_name}</p></div><div className="project-dates"><small>PROJECT DATES</small><p>{displayDate(project.start_date)} – {displayDate(project.end_date)}</p></div><div className="project-price"><small>PROJECT PRICE</small><p>{money(project.price_cents)}</p></div><button className="button secondary" disabled={signingOut || creatingDemo || loading} onClick={() => { setEditor(project); setNotice('') }}>Open<span className="sr-only"> {project.name}</span> ↗</button></article>)}</div>}
     </section><div className="next-step"><span className="step-dot">04</span><p><strong>See the cash ahead.</strong> Open a project to enter expenses and client payments, then review Forecast for daily balances and funding gaps.</p></div></>}
   </>
 }
