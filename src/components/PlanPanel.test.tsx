@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { expect, it } from 'vitest'
+import { expect, it, vi } from 'vitest'
 import { planFixture } from '../test/plan-fixture'
 import PlanPanel from './PlanPanel'
 
@@ -28,4 +28,18 @@ it('requires a balanced total and a reason for manual payment changes', async ()
   await user.type(screen.getByLabelText('Deposit change reason'), 'Cover materials')
   await user.click(screen.getByRole('button', { name: 'Update comparison' }))
   expect(screen.getByRole('alert')).toHaveTextContent('Keep the total client payments unchanged')
+})
+
+it('prints applied plans and prevents exporting unapplied inputs', async () => {
+  const user = userEvent.setup(), print = vi.spyOn(window, 'print').mockImplementation(() => {})
+  render(<PlanPanel baseline={planFixture}/>)
+  await user.click(screen.getByRole('button', { name: 'Print / save PDF' }))
+  expect(print).toHaveBeenCalledOnce()
+  await user.clear(screen.getByLabelText('Increase all expenses (%)'))
+  await user.type(screen.getByLabelText('Increase all expenses (%)'), '10')
+  expect(screen.getByRole('button', { name: 'Print / save PDF' })).toBeDisabled()
+  expect(screen.getByRole('article', { name: 'Printable payment plan' })).toHaveTextContent('Payment plan unavailable')
+  await user.click(screen.getByRole('button', { name: 'Update comparison' }))
+  expect(screen.getByRole('button', { name: 'Print / save PDF' })).toBeEnabled()
+  expect(screen.getByRole('article', { name: 'Printable payment plan' })).toHaveTextContent('expenses increased 10%')
 })

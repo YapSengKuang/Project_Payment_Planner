@@ -35,7 +35,7 @@ it('reopens a preserved baseline even when the working schedule has changed', as
   render(<PlanWorkspace client={{} as SupabaseClient} baseline={{ ...planFixture, milestones: [] }} onBusyChange={vi.fn()}/>)
   await screen.findByRole('option', { name: /Original terms/ })
   await user.selectOptions(screen.getByLabelText('Compare from'), 'r1')
-  expect(await screen.findByText(/Source: Original terms/)).toBeInTheDocument()
+  expect(await screen.findByText(/^Source: Original terms/)).toBeInTheDocument()
   expect(screen.getByLabelText('Deposit proposed amount (AUD)')).toHaveValue('2000.00')
   expect(screen.getByRole('button', { name: 'Save named revision' })).toBeEnabled()
 })

@@ -44,6 +44,6 @@ export default function PlanWorkspace({ client, baseline, onBusyChange }: { clie
       {selected && <p className="summary-note">Viewing “{selected.name}”, saved {new Date(selected.created_at).toLocaleString('en-AU')}. Its original schedule, assumptions and proposal are preserved. Further saves create a new revision.</p>}
       {notice && <p role="status" className="notice success">{notice}</p>}
     </section>
-    <PlanPanel key={selected?.id ?? 'working'} baseline={selected?.baseline ?? baseline} savedSettings={selected?.settings} sourceLabel={selected?.name ?? 'Current saved working schedule'} onSaveRevision={save} onBusyChange={working}/>
+    <PlanPanel disabled={busy || loading} key={selected?.id ?? 'working'} baseline={selected?.baseline ?? baseline} savedSettings={selected?.settings} sourceLabel={selected?.name ?? 'Current saved working schedule'} onSaveRevision={save} onBusyChange={working}/>
   </div>
 }
