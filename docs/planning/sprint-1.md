@@ -1,6 +1,6 @@
 # Sprint 1 development tickets
 
-Entry condition: review discovery evidence and agree the unresolved scope conventions. This backlog prepares the first development sprint; these tickets are not implemented.
+Entry condition: review discovery evidence and agree the unresolved scope conventions. Implementation and verification status is recorded below. Discovery evidence remains pending; development proceeded at the owner's request.
 
 ## S1-01 Scaffold and checks
 
@@ -39,3 +39,8 @@ Configure the production build and preview deployment, Supabase public environme
 Acceptance: a preview URL loads over HTTPS and supports the sign-in/save/reopen journey; record isolation checks pass. Review responsive layouts and accessible labels. Record the deployed revision and test evidence.
 
 Sprint completion requires a real authenticated user saving and reopening a project and verified isolation. A scaffold or local-storage demo alone does not meet it.
+
+
+## Implementation status
+
+S1-01 through S1-05 are implemented and locally tested, including real local Supabase Auth and direct API ownership checks. Full phone/wide desktop visual acceptance remains open. S1-06 has setup instructions, build output and response headers prepared; an actual Cloudflare preview and hosted authentication configuration remain pending. See `../sprint-1-verification.md` for the evidence and limitations. Do not mark the whole sprint complete until the remaining acceptance checks pass.
