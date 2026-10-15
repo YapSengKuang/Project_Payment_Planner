@@ -16,6 +16,7 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+      - run: npm run test:build-config
       - run: python3 scripts/check_reference_projects.py
       - run: npx supabase start
       - name: Configure local test environment

@@ -3,7 +3,7 @@
   "name": "project-payment-planner",
   "compatibility_date": "2026-10-15",
   "build": {
-    "command": "npm run build"
+    "command": "npm run build:release"
   },
   "assets": {
     "directory": "./dist",

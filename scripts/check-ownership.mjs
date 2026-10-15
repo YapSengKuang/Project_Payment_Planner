@@ -1,6 +1,7 @@
 // Uses real Supabase Auth accounts and direct PostgREST requests. No service key needed.
 // Run only against a local/dedicated test project with email confirmation disabled.
 import assert from 'node:assert/strict'
+import { requireLocalTestBackend } from './test-backend-guard.mjs'
 import { checkDemoProjects } from './check-demo-projects.mjs'
 import { checkRevisions } from './check-revisions.mjs'
 import { checkExpenseOwnership, checkMilestoneOwnership } from './check-schedule-ownership.mjs'
@@ -9,6 +10,7 @@ import { createClient } from '@supabase/supabase-js'
 const url = process.env.SUPABASE_URL
 const key = process.env.SUPABASE_PUBLISHABLE_KEY
 assert(url && key, 'Set SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY for a dedicated test backend.')
+requireLocalTestBackend(url)
 const client = () => createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
 const suffix = randomUUID()
 const a = client(), b = client(), anon = client()
