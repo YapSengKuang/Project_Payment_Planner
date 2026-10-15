@@ -10,7 +10,7 @@ import { loadProjects, saveProject } from './lib/projects-api'
 export default function App() {
   const [session, setSession] = useState<Session | null>(null)
   const [authReady, setAuthReady] = useState(!supabase)
-  const [authError, setAuthError] = useState(() => new URLSearchParams(window.location.hash.slice(1)).has('error_description') ? 'This sign-in link is invalid or has expired. Request a new link below.' : '')
+  const [authError, setAuthError] = useState(() => new URLSearchParams(window.location.hash.slice(1)).has('error_description') ? 'Sign-in was cancelled or could not be completed. Try Google again or request a new email link.' : '')
   useEffect(() => {
     if (!supabase) return
     let active = true

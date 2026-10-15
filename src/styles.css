@@ -60,3 +60,8 @@ main { max-width: 1390px; margin: 0 auto; padding: 43px 48px 24px; }.page-headin
   .step-dot { flex-shrink: 0; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; } }
+
+.google-button { gap: 12px; margin-top: 0; }
+.google-button > span { font: 700 20px sans-serif; color: #003e83; }
+.auth-divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; color: #716a73; font-size: 12px; }
+.auth-divider::before, .auth-divider::after { content: ''; height: 1px; background: #e3dfe4; flex: 1; }
