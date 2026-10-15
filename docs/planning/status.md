@@ -1,6 +1,6 @@
 # Progress and decisions
 
-Date: 15 October 2026
+Date: 16 October 2026
 
 ## Sprint 0
 
@@ -28,7 +28,7 @@ Phone, tablet and desktop form layouts were reviewed in Chrome at 390px, 768px a
 
 Hosted email delivery and the complete hosted sign-in/save/reopen journey still require a real test using an allowed email address. Supabase custom SMTP is not configured; the default sender is limited to project team addresses. A custom email provider is needed before general-user pilot access. Discovery validation remains pending.
 
-Expenses and milestones were subsequently implemented in Sprint 2, and cash forecasting in Sprint 3. Scenarios, versions and export remain later work.
+Expenses and milestones were subsequently implemented in Sprint 2, cash forecasting in Sprint 3, and scenarios, versions and export in Sprint 4.
 
 
 ## Sprint 2
@@ -43,3 +43,10 @@ Implemented on `sprint-3`: checked integer-cent cash forecast engine, Forecast s
 ## Sprint 4
 
 Branch `sprint-4` starts from merged main (`529765a`). Implemented separate feature commits for scenarios, explained payment/deposit adjustments, immutable named revisions and printable payment plans. See `sprint-4.md` for the final conventions and acceptance evidence. Follow-up review retained existing change explanations and added revision-load guard coverage. 58 unit/component tests, local database ownership/revision integration tests, reference fixtures, lint, TypeScript and build pass. Responsive layouts are checked at 390/768/1440px. The additive revision migration is applied locally and transactionally to hosted Supabase. Full hosted workflow and saved-PDF visual acceptance remain pending; the automated browser cannot inspect Chrome's print dialog.
+
+
+## Sprint 5
+
+Started on `sprint-5` from `origin/main` (`3659801`, Sprint 4 merged). Implemented public configuration validation for release builds and local-only integration-test safeguards, each committed separately. Added `check:release`, CI checks for rejected deployment configurations and the pilot protocol/release matrix. 65 unit/component tests, lint, configured production build, negative build checks, independent fixtures and real local integration checks pass. `npm audit --omit=dev` reported zero known production dependency vulnerabilities on 16 October 2026; this is an advisory database snapshot, not a complete security assessment.
+
+Sprint 4's demo loader is also merged, with successful hosted sample loading and reopening of the larger-deposit revision recorded in that work. No Sprint 5 UI redesign or schema migration is introduced. Real pilot sessions (0 of 3 to 5), candidate mobile/authentication checks, actual usage review and manual PDF pagination remain open. No release claim is made. See `sprint-5.md` and `../pilot/release-checklist.md`.

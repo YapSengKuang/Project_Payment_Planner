@@ -4,7 +4,7 @@
 
 Use Node.js 22.12 or later and npm. Run `npm ci`, copy `.env.example` to `.env.local`, configure the public Supabase URL/key, then run `npm run dev`. Vite serves on http://127.0.0.1:5173 (or the next free port). Restart Vite after environment changes. Without valid configuration the app shows setup instructions and makes no database requests.
 
-Run `npm run lint`, `npm run typecheck`, `npm test`, and `npm run build`. `npm run preview` serves the production build. The font is bundled from `@fontsource/didact-gothic`, including its upstream open font licence in that package; no external font request is needed.
+Run `npm run lint`, `npm run typecheck`, `npm test`, and `npm run build`. For a configured release, run `npm run check:release` (including `build:release` and negative configuration checks). `npm run preview` serves the production build. The font is bundled from `@fontsource/didact-gothic`, including its upstream open font licence in that package; no external font request is needed.
 
 ## Local Supabase
 
@@ -12,7 +12,7 @@ Docker must be running. From this checkout run `npx supabase start`. The tracked
 
 Sign in with an email address; open its magic link in the local email viewer. Local emails are not sent externally. The browser link must open on the same origin used to start sign-in. For a database reset use `npx supabase db reset` only for this disposable local backend; it destroys local records. Stop local services with `npx supabase stop` when finished.
 
-For isolation checks, create an ignored `.env.test` containing `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` for this local or dedicated test backend, then run `npm run test:integration`. Tests create two disposable Auth accounts, exercise direct database operations and remove the test project. Auth accounts remain until local reset. Never point these tests at production. Email confirmation must be disabled on the dedicated test backend; the production app uses email links independently of that test setting.
+For isolation checks, create an ignored `.env.test` containing `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` for this local test backend, then run `npm run test:integration`. Tests create two disposable Auth accounts, exercise direct database operations and remove the test project. Auth accounts remain until local reset. The suite refuses hosted URLs before creating any accounts or records. Never point these tests at production. Email confirmation must be disabled on the dedicated test backend; the production app uses email links independently of that test setting.
 
 ## Hosted Supabase
 
@@ -27,7 +27,7 @@ The app uses passwordless email links; there is no password reset flow. Requesti
 
 The connected Cloudflare project is a Worker named `project-payment-planner`. Its first failed build used `main` before application code was merged. Sprint 1 is now merged, and Cloudflare tracks `main` for production.
 
-Build command: `npm run build`. Deploy command: `npx wrangler deploy`. Root directory: `/`. Set the two public `VITE_SUPABASE_*` values in **Builds → Variables and secrets**, not runtime variables. `.node-version` selects Node 22. Wrangler also runs the production build so direct CLI deployments work; the dashboard build may run it twice harmlessly.
+Build command: `npm run build:release`. Deploy command: `npx wrangler deploy`. Root directory: `/`. Set the two public `VITE_SUPABASE_*` values in **Builds → Variables and secrets**, not runtime variables. `.node-version` selects Node 22. Wrangler also runs the validated release build so direct CLI deployments work; the dashboard build may run it twice harmlessly.
 
 Branch previews run `npx wrangler preview`; the required `previews: {}` configuration enables this for the static app. It does not replace the production command `npx wrangler deploy`. Configure preview build variables separately, preferably against a test Supabase backend, and allow exact preview callback URLs there. Frontend Vite variables are compiled into the assets; Worker runtime bindings do not configure them.
 
@@ -47,8 +47,8 @@ Add each preview origin and the production origin to Supabase Auth's allowed red
 
 Record the preview URL and deployed Git revision after a successful build. Verify sign-in, create, edit, reload, reopen, sign-out, narrow layouts, keyboard focus and record isolation. Check current Supabase/Cloudflare quotas before pilot release.
 
-To roll back the frontend, use the prior successful Pages deployment. Database changes require a separately reviewed forward migration; rolling back frontend code does not undo the database. The initial migration adds only the project table, policies and metadata trigger.
+To roll back the frontend, use the prior successful Pages deployment. Database changes require a separately reviewed forward migration; rolling back frontend code does not undo the database. Migrations 001 through 005 add projects, schedules, immutable revisions and private demo seeding. Sprint 5 has no schema migration.
 
 ## Scope
 
-Sprint 1 implements project setup only. Expenses, payment milestones, forecast, scenarios and export remain later sprint work. AUD is the only enabled currency. GST-inclusive is the default and can be changed explicitly per project. Discovery evidence remains pending; these are provisional product conventions, not customer validation results.
+Sprints 1 through 4 implement sign-in, project setup, expenses, expected client receipts, forecasting, proposal adjustments, scenarios, immutable revisions, browser print and demo data. Sprint 5 focuses on pilot and release readiness. AUD remains the only supported currency. GST convention is fixed while schedule entries exist. Discovery and real-user pilot evidence remain pending; see `docs/pilot/release-checklist.md`.

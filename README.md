@@ -20,6 +20,12 @@ After signing in, click **Load demo projects** on the project list. It creates t
 
 Dates start from your local calendar day on first creation. Repeated clicks reopen the same projects and preserve your edits. Existing projects are untouched. These are synthetic examples, not customer validation. The additive `202610160005_demo_projects.sql` migration is required; creation is atomic and restricted to the signed-in owner.
 
+## Sprint 5 release readiness
+
+Development continues on `sprint-5` from merged main. Release deployments now validate public Supabase settings before bundling; missing configuration and secret/service-role keys stop the build. Run `npm run check:release` for the frontend release checks, then `npm run test:integration` against local Supabase for ownership and revision checks. Disposable integration data is now restricted to localhost.
+
+See the [Sprint 5 scope and evidence](docs/planning/sprint-5.md), [pilot session guide](docs/pilot/session-guide.md) and [release checklist](docs/pilot/release-checklist.md). Real participant sessions, manual PDF inspection, candidate mobile/authentication checks and actual dashboard quota review remain open. Sprint 5 is not complete or cleared for general release.
+
 ## Current progress
 
 Sprint 1 is merged into `main`. Sprint 2 adds expenses, deposits, milestones, receipt-date calculations and payment-total checks. Sprint 3 adds cash forecasting, funding-gap detection and an interactive balance chart. Sprint 4 is implemented on `sprint-4` from merged `main`, adding payment proposals, constrained deposit suggestions, scenarios, immutable named revisions and printable plans. Google sign-in requires the provider setup described below.
