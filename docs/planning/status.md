@@ -28,9 +28,13 @@ Phone, tablet and desktop form layouts were reviewed in Chrome at 390px, 768px a
 
 Hosted email delivery and the complete hosted sign-in/save/reopen journey still require a real test using an allowed email address. Supabase custom SMTP is not configured; the default sender is limited to project team addresses. A custom email provider is needed before general-user pilot access. Discovery validation remains pending.
 
-Expenses, milestones, forecast, scenarios, versions and export are subsequent sprint work.
+Expenses and milestones were subsequently implemented in Sprint 2, and cash forecasting in Sprint 3. Scenarios, versions and export remain later work.
 
 
 ## Sprint 2
 
-Expense CRUD, deposit/milestone CRUD, database-generated receipt dates, explained overrides, draft/complete totals and Google OAuth integration are implemented on `sprint-2`, each in a separate feature commit. See `sprint-2.md` for requirements, observed browser checks, local database checks and the outstanding Google redirect configuration. The hosted expense/milestone schema is applied; the production frontend remains on `main` until merge.
+Expense CRUD, deposit/milestone CRUD, database-generated receipt dates, explained overrides, draft/complete totals and Google OAuth integration are implemented on `sprint-2`, each in a separate feature commit. See `sprint-2.md` for requirements, observed browser checks and local database checks. The hosted expense/milestone schema is applied. After the Google redirect correction, the preview reached Google's account chooser; a complete consent/session/sign-out round trip remains unverified.
+
+## Sprint 3
+
+Implemented on `sprint-3`: checked integer-cent cash forecast engine, Forecast screen, dated cash timeline, first shortage, maximum funding gap, cash totals, assumptions and provisional-data warnings, and an interactive balance chart. Feature commits are separate. See `sprint-3.md` for conventions, acceptance examples, browser evidence and limitations. No schema changes are needed. 46 automated tests, the four independently calculated synthetic fixtures, lint, TypeScript and production build pass. Local browser checks cover saved changes, reload/reopen, keyboard interaction and phone/tablet/desktop layouts. Suggestions, scenarios, schedule versions and export remain Sprint 4. Hosted deployment and authenticated acceptance of Sprint 3 remain pending.
