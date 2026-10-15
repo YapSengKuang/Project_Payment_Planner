@@ -8,9 +8,21 @@ Plan fixed-price projects before agreeing to client payment terms. The app suppo
 
 **Sprint 3 preview:** [Try cash forecasts and funding gaps](https://sprint-3-project-payment-planner.skorsengkuang.workers.dev/)
 
+**Sprint 4 preview:** [Try proposals, scenarios and saved revisions](https://sprint-4-project-payment-planner.skorsengkuang.workers.dev/)
+
+## Try every feature with demo data
+
+After signing in, click **Load demo projects** on the project list. It creates two private, editable fictional projects:
+
+- **Website redesign:** three expenses, a deposit, two milestones, invoice terms and an explained receipt override. Its original forecast has a $2,500 maximum funding gap.
+- **Plan & compare:** open the four saved revisions to compare original terms, a larger deposit (no gap), a capped deposit ($1,000 gap), and seven-day receipt delays with 10% higher costs ($3,300 gap). Edit a proposal, save another revision and try Print / Save as PDF.
+- **Incomplete draft:** starting cash and a partially allocated payment schedule demonstrate draft warnings and $6,800 still to allocate.
+
+Dates start from your local calendar day on first creation. Repeated clicks reopen the same projects and preserve your edits. Existing projects are untouched. These are synthetic examples, not customer validation. The additive `202610160005_demo_projects.sql` migration is required; creation is atomic and restricted to the signed-in owner.
+
 ## Current progress
 
-Sprint 1 is merged into `main`. Sprint 2 adds expenses, deposits, milestones, receipt-date calculations and payment-total checks. Sprint 3 is implemented locally on `sprint-3`, based on Sprint 2; it adds cash forecasting, funding-gap detection and an interactive balance chart. Google sign-in requires the provider setup described below.
+Sprint 1 is merged into `main`. Sprint 2 adds expenses, deposits, milestones, receipt-date calculations and payment-total checks. Sprint 3 adds cash forecasting, funding-gap detection and an interactive balance chart. Sprint 4 is implemented on `sprint-4` from merged `main`, adding payment proposals, constrained deposit suggestions, scenarios, immutable named revisions and printable plans. Google sign-in requires the provider setup described below.
 
 The foundation includes:
 
@@ -22,7 +34,7 @@ The foundation includes:
 - Responsive phone, tablet and desktop layouts.
 - Cloudflare Workers hosting, automated checks and local ownership integration tests.
 
-Customer validation is still pending. Scenarios, schedule versions and printable exports remain Sprint 4 work. See [Sprint 3 requirements and verification](docs/planning/sprint-3.md). Forecasts use saved expected receipt dates and daily closing balances; they do not confirm payment or detect intraday shortages.
+Customer validation is still pending. Sprint 4 includes scenarios, saved revisions and browser print export; final hosted and PDF layout acceptance remain pending. See [Sprint 3 requirements and verification](docs/planning/sprint-3.md). Forecasts use saved expected receipt dates and daily closing balances; they do not confirm payment or detect intraday shortages.
 
 For Google login, configure the [Google OAuth provider](docs/google-sign-in.md). The hosted provider is enabled, but its Google Cloud redirect URI must pass a real sign-in test before this is considered verified.
 
@@ -70,7 +82,7 @@ python3 scripts/check_reference_projects.py
 npm run test:integration
 ```
 
-Sprint 3 verification passed 46 unit/component tests, all four reference forecasts, lint, TypeScript and the production build. Local browser checks confirmed forecast recalculation after saving, reload/reopen and layouts at 390px, 768px and 1440px. Sprint 2 previously passed local two-account project/schedule ownership checks. See [Sprint 3 evidence and limits](docs/planning/sprint-3.md).
+Sprint 4 verification passed 58 unit/component tests, local two-account ownership/revision checks, all four reference forecasts, lint, TypeScript and the production build. Local browser checks confirmed forecast recalculation after saving, reload/reopen and layouts at 390px, 768px and 1440px. Sprint 2 previously passed local two-account project/schedule ownership checks. See [Sprint 4 evidence and limits](docs/planning/sprint-4.md).
 
 GitHub Actions runs the application checks and local Supabase ownership tests. Unit tests do not require containers; ownership integration tests do. Integration checks create disposable test accounts and must not target production.
 
@@ -112,6 +124,7 @@ See [development and deployment instructions](docs/development.md) for migration
 - [Sprint 1 tickets](docs/planning/sprint-1.md)
 - [Sprint 2 requirements and verification](docs/planning/sprint-2.md)
 - [Sprint 3 requirements and verification](docs/planning/sprint-3.md)
+- [Sprint 4 requirements and verification](docs/planning/sprint-4.md)
 - [Progress and decisions](docs/planning/status.md)
 - [Synthetic reference projects](fixtures/reference-projects.json)
 
@@ -119,15 +132,15 @@ Original documents in `Project Plan/` remain unchanged.
 
 ## Version control
 
-Sprint 1 is merged. Current development is on `sprint-3`, based on Sprint 2; production continues to deploy from `main`. Sprint 3 has a separate Cloudflare preview; its full hosted authenticated acceptance remains pending.
+Sprint 1 is merged. Current development is on `sprint-4`, based on merged `main`; production continues to deploy from `main`. Sprint 3 has a separate Cloudflare preview; its full hosted authenticated acceptance remains pending.
 
 ```sh
-git switch sprint-3
-git pull --ff-only origin sprint-3
+git switch sprint-4
+git pull --ff-only origin sprint-4
 # Make and review your changes.
 git add <files>
 git commit -m "Describe the change"
-git push origin sprint-3
+git push origin sprint-4
 ```
 
 Secrets, local configuration and build outputs are ignored. Keep identifiable interview data out of the repository.

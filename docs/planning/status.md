@@ -38,3 +38,8 @@ Expense CRUD, deposit/milestone CRUD, database-generated receipt dates, explaine
 ## Sprint 3
 
 Implemented on `sprint-3`: checked integer-cent cash forecast engine, Forecast screen, dated cash timeline, first shortage, maximum funding gap, cash totals, assumptions and provisional-data warnings, and an interactive balance chart. Feature commits are separate. See `sprint-3.md` for conventions, acceptance examples, browser evidence and limitations. No schema changes are needed. 46 automated tests, the four independently calculated synthetic fixtures, lint, TypeScript and production build pass. Local browser checks cover saved changes, reload/reopen, keyboard interaction and phone/tablet/desktop layouts. Suggestions, scenarios, schedule versions and export remain Sprint 4. Hosted preview deployment now succeeds with separately configured Supabase build variables and an exact allowed redirect; its sign-in screen is verified. Full hosted authenticated acceptance remains pending.
+
+
+## Sprint 4
+
+Branch `sprint-4` starts from merged main (`529765a`). Implemented separate feature commits for scenarios, explained payment/deposit adjustments, immutable named revisions and printable payment plans. See `sprint-4.md` for the final conventions and acceptance evidence. Follow-up review retained existing change explanations and added revision-load guard coverage. 58 unit/component tests, local database ownership/revision integration tests, reference fixtures, lint, TypeScript and build pass. Responsive layouts are checked at 390/768/1440px. The additive revision migration is applied locally and transactionally to hosted Supabase. Full hosted workflow and saved-PDF visual acceptance remain pending; the automated browser cannot inspect Chrome's print dialog.

@@ -111,3 +111,32 @@ main { max-width: 1390px; margin: 0 auto; padding: 43px 48px 24px; }.page-headin
 .chart-control { display: flex; flex-direction: column; gap: 4px; margin-top: 20px; font-size: 13px; color: #003e83; }.chart-control input { width: 100%; min-height: 44px; accent-color: #7e3075; }
 .chart-reading { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; margin: 8px 0 0; font-size: 14px; }.chart-reading strong { font-weight: 400; }.chart-reading > span { color: #92212e; }
 @media(max-width:520px) { .forecast-chart { padding: 18px 12px; }.forecast-chart h3 { font-size: 19px; }.chart-reading { flex-direction: column; } }
+
+.plan-panel { min-width: 0; }.plan-panel > .muted { margin-bottom: 24px; }.scenario-form { margin: 24px 0; }.comparison-table { width: 100%; border-collapse: collapse; table-layout: fixed; margin: 24px 0; font-size: 14px; }.comparison-table th,.comparison-table td { text-align: left; padding: 16px 10px; border-bottom: 1px solid #e3dfe4; overflow-wrap: anywhere; font-weight: 400; }.comparison-table thead { background: #f4edf3; color: #7e3075; }
+@media(max-width:520px) { .plan-panel { padding: 24px 18px; }.comparison-table { font-size: 13px; }.comparison-table td,.comparison-table th { padding: 14px 5px; } }
+
+.deposit-limit { margin: 24px 0; max-width: 540px; }.proposal-payment { padding: 20px; margin-top: 24px; border: 1px solid #e3dfe4; border-radius: 8px; }.proposal-payment legend { padding: 0 8px; font-size: 18px; overflow-wrap: anywhere; max-width: 100%; }.proposal-payment > .muted { margin-bottom: 20px; }.proposal-payment > .field { margin-top: 20px; }.suggestion-box { border-left: 4px solid #7e3075; background: #f4edf3; padding: 20px; margin: 24px 0; border-radius: 6px; }.suggestion-box h3 { margin: 0 0 10px; }.suggestion-box p { font-size: 14px; }.plan-panel fieldset { min-width: 0; }
+@media(max-width:520px) { .proposal-payment { padding: 16px 12px; } }
+
+.revision-picker { margin-bottom: 24px; }.revision-picker > .field { margin-top: 20px; }.revision-picker .muted { margin-bottom: 20px; }.revision-save { margin-top: 28px; padding-top: 24px; border-top: 1px solid #e3dfe4; }.revision-save .field { margin: 20px 0; }.revision-save .muted { font-size: 14px; }
+@media(max-width:520px) { .revision-picker { padding: 24px 18px; } }
+
+.print-actions { padding-top: 24px; margin-top: 24px; border-top: 1px solid #e3dfe4; }.print-actions .muted { margin-bottom: 20px; }.print-plan { display: none; }
+.demo-projects { margin-bottom: 24px; }.demo-projects > p, .demo-projects li { font-size: 14px; line-height: 1.6; }.demo-projects ul { padding-left: 20px; }.demo-projects li { margin-block: 10px; }.demo-projects strong { font-weight: 400; color: #003e83; }.demo-projects .button { flex-shrink: 0; }
+@media(max-width:780px) { .demo-projects .section-top { flex-wrap: wrap; } }
+@media(max-width:520px) { .demo-projects { padding: 24px 18px; }.demo-projects .button { width: 100%; } }
+@media print {
+  @page { size: A4; margin: 16mm; }
+  :root, body { background: white; color: #222; font-size: 11pt; }
+  .sidebar, .skip-link, .topbar, .page-heading, .account-strip, .page-footer, main > .notice, .back-button, .project-context, .project-tabs, .schedule-summary, .revision-picker, .plan-panel > :not(.print-plan) { display: none !important; }
+  .app-shell, .workspace, main, .project-detail, .plan-workspace, .plan-panel { display: block; width: auto; min-height: 0; max-width: none; margin: 0; padding: 0; border: 0; background: white; }
+  .print-plan { display: block; color: #222; overflow-wrap: anywhere; }
+  .print-plan h1 { font-size: 26pt; margin: 8pt 0; }.print-plan h2 { font-size: 16pt; margin: 20pt 0 10pt; break-after: avoid; }.print-plan h3 { font-size: 12pt; }
+  .print-plan header p { margin: 5pt 0; }.print-plan .eyebrow { color: #444; font-size: 8pt; }
+  .print-plan p, .print-plan li { font-size: 10pt; line-height: 1.4; }.print-plan li { margin: 5pt 0; }
+  .print-plan table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 9pt; margin: 10pt 0; }
+  .print-plan th, .print-plan td { padding: 7pt 5pt; text-align: left; vertical-align: top; border: 1px solid #bbb; font-weight: 400; overflow-wrap: anywhere; }
+  .print-plan thead { display: table-header-group; }.print-plan thead th { font-weight: bold; background: #eee; }.print-plan tr { break-inside: avoid; }
+  .print-plan small { display: block; font-size: 8pt; line-height: 1.4; margin-top: 5pt; }
+  .print-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 10pt; padding: 12pt 0; border-block: 1px solid #bbb; margin: 16pt 0; }.print-facts dt { font-size: 9pt; color: #444; }.print-facts dd { margin: 4pt 0 0; }
+}

@@ -8,6 +8,7 @@ import ExpensePanel from './ExpensePanel'
 import MilestonePanel from './MilestonePanel'
 import ScheduleSummary from './ScheduleSummary'
 import ForecastPanel from './ForecastPanel'
+import PlanWorkspace from './PlanWorkspace'
 type Props = { client: SupabaseClient; project: Project; onSave: (input: ProjectInput) => Promise<void>; onBack: () => void }
 export default function ProjectDetails({ client, project, onSave, onBack }: Props) {
   const [tab, setTab] = useState('setup')
@@ -25,10 +26,10 @@ export default function ProjectDetails({ client, project, onSave, onBack }: Prop
     return () => { ignore = true }
   }, [client, project.id, retry])
   return <div className="project-detail"><button className="text-button back-button" disabled={working} onClick={onBack}>← All projects</button><div className="project-context"><h2>{project.name}</h2><p>{project.client_name} · AUD · GST {project.tax_basis}</p></div>
-    <nav className="project-tabs" aria-label="Project sections">{['setup', 'expenses', 'milestones', 'forecast'].map((item, index) => <button disabled={working} key={item} aria-current={tab === item ? 'page' : undefined} onClick={() => setTab(item)}>0{index + 1} {item.charAt(0).toUpperCase() + item.slice(1)}</button>)}</nav>
+    <nav className="project-tabs" aria-label="Project sections">{['setup', 'expenses', 'milestones', 'forecast', 'plan'].map((item, index) => <button disabled={working} key={item} aria-current={tab === item ? 'page' : undefined} onClick={() => setTab(item)}>0{index + 1} {item === 'plan' ? 'Plan & compare' : item.charAt(0).toUpperCase() + item.slice(1)}</button>)}</nav>
     {failure && <p role="alert" className="notice error">{failure} <button className="text-button" onClick={() => { setFailure(''); setReady(false); setRetry(v => v + 1) }}>Retry schedule</button></p>}
     {ready && <ScheduleSummary project={project} expenses={expenses} milestones={milestones}/>}
     {!ready && !failure && <p role="status">Loading project schedule…</p>}
-    {tab === 'setup' ? <ProjectForm project={project} taxBasisLocked={!ready || expenses.length > 0 || milestones.length > 0} onSave={onSave} onCancel={onBack} onBusyChange={setWorking}/> : ready && (tab === 'expenses' ? <ExpensePanel client={client} project={project} expenses={expenses} onChange={setExpenses} onBusyChange={setWorking}/> : tab === 'milestones' ? <MilestonePanel client={client} project={project} milestones={milestones} onChange={setMilestones} onBusyChange={setWorking}/> : <ForecastPanel project={project} expenses={expenses} milestones={milestones}/>)}
+    {tab === 'setup' ? <ProjectForm project={project} taxBasisLocked={!ready || expenses.length > 0 || milestones.length > 0} onSave={onSave} onCancel={onBack} onBusyChange={setWorking}/> : ready && (tab === 'expenses' ? <ExpensePanel client={client} project={project} expenses={expenses} onChange={setExpenses} onBusyChange={setWorking}/> : tab === 'milestones' ? <MilestonePanel client={client} project={project} milestones={milestones} onChange={setMilestones} onBusyChange={setWorking}/> : tab === 'forecast' ? <ForecastPanel project={project} expenses={expenses} milestones={milestones}/> : <PlanWorkspace client={client} baseline={{ project, expenses, milestones }} onBusyChange={setWorking}/>)}
   </div>
 }
