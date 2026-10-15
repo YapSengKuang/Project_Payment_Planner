@@ -39,3 +39,8 @@ The browser print action opens Chrome's print workflow, but that dialog blocks a
 The revision migration was applied transactionally through the hosted Supabase SQL editor on 16 October. A post-commit query confirmed the table exists. Like earlier SQL-editor migrations, this does not update CLI migration history; reconcile that history before any future CLI migration push.
 
 The Sprint 4 branch preview needs its own public Supabase build variables and exact allowed authentication redirect. Its frontend uses the existing hosted backend, so preview data is not isolated. Full hosted authenticated revision save/reopen and PDF export acceptance remain pending. Customer discovery, real reference projects, general-user email delivery and Sprint 5 pilot observation remain open.
+
+
+## Preview deployment evidence
+
+Pushed `sprint-4` with separate feature commits. GitHub application CI and the initial Cloudflare build passed for `6ea371c`. Configured the Sprint 4 preview's own public Supabase URL/key, verified the subsequent build received both variables, and added its exact origin to Supabase's authentication redirect allowlist. The configured rebuild `2dde6632-7eae-42fa-aead-fabfa4dd1816` succeeded for `6ea371c` and generated the same application asset as the local build. The preview opens at https://sprint-4-project-payment-planner.skorsengkuang.workers.dev and was visually checked to show Google and email sign-in rather than workspace setup instructions. A read-only anonymous request to the hosted revision table returned HTTP 401. Full hosted authenticated revision save/reopen and a visual check of a saved PDF remain user acceptance items.

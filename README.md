@@ -8,6 +8,8 @@ Plan fixed-price projects before agreeing to client payment terms. The app suppo
 
 **Sprint 3 preview:** [Try cash forecasts and funding gaps](https://sprint-3-project-payment-planner.skorsengkuang.workers.dev/)
 
+**Sprint 4 preview:** [Try proposals, scenarios and saved revisions](https://sprint-4-project-payment-planner.skorsengkuang.workers.dev/)
+
 ## Current progress
 
 Sprint 1 is merged into `main`. Sprint 2 adds expenses, deposits, milestones, receipt-date calculations and payment-total checks. Sprint 3 adds cash forecasting, funding-gap detection and an interactive balance chart. Sprint 4 is implemented on `sprint-4` from merged `main`, adding payment proposals, constrained deposit suggestions, scenarios, immutable named revisions and printable plans. Google sign-in requires the provider setup described below.
