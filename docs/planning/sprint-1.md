@@ -43,4 +43,4 @@ Sprint completion requires a real authenticated user saving and reopening a proj
 
 ## Implementation status
 
-S1-01 through S1-05 are implemented and locally tested, including real local Supabase Auth and direct API ownership checks. Full phone/wide desktop visual acceptance remains open. S1-06 has setup instructions, build output and response headers prepared; an actual Cloudflare preview and hosted authentication configuration remain pending. See `../sprint-1-verification.md` for the evidence and limitations. Do not mark the whole sprint complete until the remaining acceptance checks pass.
+S1-01 through S1-05 are implemented and locally tested, including real local Supabase Auth and direct API ownership checks. Phone, tablet and desktop layouts have been reviewed in Chrome. S1-06 now has a successful Cloudflare Worker static deployment at https://project-payment-planner.skorsengkuang.workers.dev, hosted schema and redirect configuration. The full hosted email sign-in/save/reopen check remains pending; custom SMTP is required for general-user email delivery. See `../sprint-1-verification.md` for evidence and limits.

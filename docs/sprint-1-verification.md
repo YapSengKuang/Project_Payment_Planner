@@ -37,3 +37,14 @@ Expired-link messaging is implemented; live token expiry was not waited out. Hos
 - Local Supabase Studio: http://127.0.0.1:54323/
 
 Request a link with any test email in the app, then open its sign-in link from the local email viewer. Use `pilot@example.com` to reopen the saved browser test project. These addresses and accounts are local development only.
+
+
+## Hosted deployment follow-up
+
+On 15 October 2026, Cloudflare deployed application revision `b431419` successfully from `sprint-1`. Its existing project is a Worker with static assets, not a Pages project. Original failures came from building `main` (planning files only) with no build step or static asset configuration. Build variables, branch and Wrangler configuration are now set. The live root returned HTTP 200 and displayed the configured sign-in form.
+
+The Supabase migration was applied transactionally in the hosted SQL editor. Site URL and exact allowed redirects were set to the hosted origin plus the two localhost origins. A read-only anonymous REST request to `projects` returned HTTP 401 / permission denied; no anonymous table grants were added. The SQL editor does not record CLI migration history automatically; reconcile that history before a future CLI migration push.
+
+Chrome responsive checks supersede the earlier in-app browser limit: inspected phone sign-in/list/form at 390px, form at 768px and form at 1440px. Measured widths were respectively 390/390, 768/768 and 1440/1440 for viewport/document, with no horizontal overflow. Phone/tablet forms stack; desktop uses two columns. Existing local project values were used read-only, with edits cancelled. The local hosted environment configuration was restored after these checks.
+
+The 19 tests, lint, TypeScript and Wrangler dry-run build passed after the responsive changes. Hosted sign-in/save/reopen was not exercised with a real email inbox. Custom SMTP is not configured, so real email testing should use a Supabase project team address until a sender is set up.

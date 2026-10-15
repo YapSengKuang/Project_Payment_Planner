@@ -16,8 +16,16 @@ Supabase migration includes database constraints, owner foreign keys, row-level 
 
 See `docs/sprint-1-verification.md` for observed tests and limitations and `docs/development.md` for startup and deployment.
 
+## Deployment and responsive review
+
+The existing Cloudflare project is a Worker rather than Pages. It now deploys static Vite output from `sprint-1` using `wrangler.jsonc`. Deployment of application revision `b431419` succeeded at https://project-payment-planner.skorsengkuang.workers.dev and the site returned HTTP 200.
+
+The hosted Supabase schema and ownership policies were applied transactionally through its SQL editor. Exact production and local callback URLs were configured. An anonymous request to the hosted project table returned HTTP 401 with database permission denied, as intended. The two-account integration test remains confined to the local backend.
+
+Phone, tablet and desktop form layouts were reviewed in Chrome at 390px, 768px and 1440px, with measured document width matching viewport width. Phone sign-in and project list were also inspected. Small screens now use a top brand header, stacked fields and action buttons. Desktop retains the sidebar and two-column form.
+
 ## Remaining acceptance work
 
-Cloudflare preview deployment has not been created or tested. A hosted Supabase project, email delivery configuration, Pages project and their redirect URLs remain to be configured. Browser checks were made at the available in-app browser width; full mobile and desktop breakpoint checks remain open because the browser viewport override did not change its actual width.
+Hosted email delivery and the complete hosted sign-in/save/reopen journey still require a real test using an allowed email address. Supabase custom SMTP is not configured; the default sender is limited to project team addresses. A custom email provider is needed before general-user pilot access. Discovery validation remains pending.
 
-Sprint 1 code and local authentication/persistence/isolation checks are implemented. The sprint's hosted preview and full layout acceptance criteria remain open. Expenses, milestones, forecast, scenarios, versions and export are subsequent sprint work.
+Expenses, milestones, forecast, scenarios, versions and export are subsequent sprint work.
