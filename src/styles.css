@@ -65,3 +65,14 @@ main { max-width: 1390px; margin: 0 auto; padding: 43px 48px 24px; }.page-headin
 .google-button > span { font: 700 20px sans-serif; color: #003e83; }
 .auth-divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; color: #716a73; font-size: 12px; }
 .auth-divider::before, .auth-divider::after { content: ''; height: 1px; background: #e3dfe4; flex: 1; }
+
+.project-context { margin: 20px 0; overflow-wrap: anywhere; }.project-context p { margin: 0; color: #716a73; font-size: 14px; }
+.project-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; border-bottom: 1px solid #e0dce1; padding-bottom: 10px; }
+.project-tabs button { background: white; border: 1px solid #d9d0d8; border-radius: 6px; padding: 12px 18px; min-height: 44px; color: #534350; }
+.project-tabs button[aria-current] { background: #7e3075; color: white; border-color: #7e3075; }
+.back-button { padding-left: 0; }.schedule-total { color: #003e83; font-weight: 400; font-size: 23px; overflow-wrap: anywhere; }
+.schedule-intro { margin: 18px 0 24px; }.schedule-panel h3 { margin: 20px 0; }.schedule-panel .error-text { color: #a12230; font-size: 13px; }
+.schedule-list { list-style: none; padding: 0; margin: 24px 0 0; }.schedule-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px 20px; align-items: center; border-top: 1px solid #ece7ed; padding: 22px 0; }
+.schedule-row strong { font-weight: 400; color: #003e83; }.schedule-row h3 { font-size: 18px; margin: 0 0 6px; overflow-wrap: anywhere; }.schedule-row p { font-size: 13px; color: #716a73; margin: 0; }.schedule-entry { min-width: 0; }
+.row-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; grid-column: 1 / -1; font-size: 13px; }.row-actions .button { min-height: 40px; padding: 8px 15px; }.button.danger { background: #92212e; border-color: #92212e; }
+@media(max-width:520px) { .schedule-panel { padding: 24px 18px; }.project-tabs button { flex: 1; padding: 12px; }.schedule-total { font-size: 20px; }.schedule-row { grid-template-columns: minmax(0, 1fr); }.schedule-panel .section-top { flex-wrap: wrap; } }

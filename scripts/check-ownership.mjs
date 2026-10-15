@@ -1,6 +1,7 @@
 // Uses real Supabase Auth accounts and direct PostgREST requests. No service key needed.
 // Run only against a local/dedicated test project with email confirmation disabled.
 import assert from 'node:assert/strict'
+import { checkExpenseOwnership } from './check-schedule-ownership.mjs'
 import { randomUUID } from 'node:crypto'
 import { createClient } from '@supabase/supabase-js'
 const url = process.env.SUPABASE_URL
@@ -22,6 +23,7 @@ let id
 try {
   const created = await a.from('projects').insert(input).select().single()
   assert.ifError(created.error); id = created.data.id
+  await checkExpenseOwnership(a, b, anon, id, other)
   const own = await a.from('projects').select().eq('id', id).single()
   assert.ifError(own.error); assert.equal(own.data.price_cents, 1000029)
   const hidden = await b.from('projects').select().eq('id', id)

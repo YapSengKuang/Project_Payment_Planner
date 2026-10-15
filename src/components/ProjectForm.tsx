@@ -3,8 +3,8 @@ import type { FormEvent } from 'react'
 import { validateProject } from '../lib/project'
 import type { FormErrors, Project, ProjectFormValues, ProjectInput } from '../lib/project'
 
-type Props = { project?: Project; onSave: (input: ProjectInput) => Promise<void>; onCancel: () => void }
-export default function ProjectForm({ project, onSave, onCancel }: Props) {
+type Props = { project?: Project; taxBasisLocked?: boolean; onSave: (input: ProjectInput) => Promise<void>; onCancel: () => void }
+export default function ProjectForm({ project, taxBasisLocked = false, onSave, onCancel }: Props) {
   const [values, setValues] = useState<ProjectFormValues>({
     name: project?.name ?? '', client_name: project?.client_name ?? '',
     price: project ? (project.price_cents / 100).toFixed(2) : '',
@@ -46,9 +46,9 @@ export default function ProjectForm({ project, onSave, onCancel }: Props) {
         {field('starting_cash', 'Available starting cash (AUD)', 'text', 'Money you can allocate to this project before client receipts.')}
         {field('start_date', 'Start date', 'date')}{field('end_date', 'End date', 'date')}
         <div className="field"><label htmlFor="currency">Currency</label><input id="currency" value="AUD · Australian dollar" readOnly /><small>One currency per project. The pilot supports AUD.</small></div>
-        <div className="field"><label htmlFor="tax_basis">GST convention</label><select id="tax_basis" value={values.tax_basis} onChange={e => setValues({ ...values, tax_basis: e.target.value as ProjectFormValues['tax_basis'] })} aria-invalid={!!errors.tax_basis}>
+        <div className="field"><label htmlFor="tax_basis">GST convention</label><select disabled={taxBasisLocked} id="tax_basis" value={values.tax_basis} onChange={e => setValues({ ...values, tax_basis: e.target.value as ProjectFormValues['tax_basis'] })} aria-invalid={!!errors.tax_basis}>
           <option value="inclusive">All amounts include GST</option><option value="exclusive">All amounts exclude GST</option>
-        </select><small>Use the same convention for every amount.</small>{errors.tax_basis && <small className="error-text">{errors.tax_basis}</small>}</div>
+        </select><small>{taxBasisLocked ? 'GST convention is fixed while schedule entries exist or are loading.' : 'Use the same convention for every amount.'}</small>{errors.tax_basis && <small className="error-text">{errors.tax_basis}</small>}</div>
       </div></fieldset>
       {Object.keys(errors).length > 0 && <p role="alert" className="notice error">Please check the highlighted fields.</p>}
       {failure && <p role="alert" className="notice error">{failure}</p>}
