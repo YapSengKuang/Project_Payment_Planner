@@ -3,8 +3,8 @@ import type { FormEvent } from 'react'
 import { validateProject } from '../lib/project'
 import type { FormErrors, Project, ProjectFormValues, ProjectInput } from '../lib/project'
 
-type Props = { project?: Project; taxBasisLocked?: boolean; onSave: (input: ProjectInput) => Promise<void>; onCancel: () => void }
-export default function ProjectForm({ project, taxBasisLocked = false, onSave, onCancel }: Props) {
+type Props = { project?: Project; taxBasisLocked?: boolean; onBusyChange?: (busy: boolean) => void; onSave: (input: ProjectInput) => Promise<void>; onCancel: () => void }
+export default function ProjectForm({ project, taxBasisLocked = false, onSave, onCancel, onBusyChange }: Props) {
   const [values, setValues] = useState<ProjectFormValues>({
     name: project?.name ?? '', client_name: project?.client_name ?? '',
     price: project ? (project.price_cents / 100).toFixed(2) : '',
@@ -19,10 +19,10 @@ export default function ProjectForm({ project, taxBasisLocked = false, onSave, o
     const result = validateProject(values)
     setErrors(result.errors)
     if (!result.input) return
-    setSaving(true); setFailure('')
+    setSaving(true); onBusyChange?.(true); setFailure('')
     try { await onSave(result.input) }
     catch { setFailure('Your project could not be saved. Check your connection and try again. Your entries are still here.') }
-    finally { setSaving(false) }
+    finally { setSaving(false); onBusyChange?.(false) }
   }
   function field(key: keyof ProjectFormValues, label: string, type = 'text', hint?: string) {
     return <div className="field" key={key}><label htmlFor={key}>{label}</label>

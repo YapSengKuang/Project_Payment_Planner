@@ -7,9 +7,9 @@ import { expectedReceiptDate, validateMilestone } from '../lib/schedule'
 import type { Errors, Milestone, MilestoneValues } from '../lib/schedule'
 import { deleteRow, saveMilestone } from '../lib/schedule-api'
 import ScheduleField from './ScheduleField'
-type Props = { client: SupabaseClient; project: Project; milestones: Milestone[]; onChange: (rows: Milestone[]) => void }
+type Props = { client: SupabaseClient; project: Project; milestones: Milestone[]; onBusyChange?: (busy: boolean) => void; onChange: (rows: Milestone[]) => void }
 const empty: MilestoneValues = { kind: 'milestone', name: '', amount: '', completion_date: '', invoice_date: '', payment_terms_days: '0', receipt_override_date: '', receipt_override_reason: '' }
-export default function MilestonePanel({ client, project, milestones, onChange }: Props) {
+export default function MilestonePanel({ client, project, milestones, onChange, onBusyChange }: Props) {
   const [editor, setEditor] = useState<Milestone | 'new' | null>(null)
   const [values, setValues] = useState<MilestoneValues>(empty)
   const [errors, setErrors] = useState<Errors<MilestoneValues>>({})
@@ -30,18 +30,18 @@ export default function MilestonePanel({ client, project, milestones, onChange }
     if (override && !values.receipt_override_date) nextErrors.receipt_override_date = 'Enter an override receipt date or turn off the override.'
     setErrors(nextErrors)
     if (Object.keys(nextErrors).length || !result.input) return
-    setBusy(true); setFailure('')
+    setBusy(true); onBusyChange?.(true); setFailure('')
     try {
       const saved = await saveMilestone(client, project.id, result.input, editor && editor !== 'new' ? editor.id : undefined)
       onChange([...milestones.filter(row => row.id !== saved.id), saved]); setEditor(null); setNotice('Payment milestone saved.')
     } catch { setFailure('Could not save the payment milestone. Your entries are still here. Check your connection and try again.') }
-    finally { setBusy(false) }
+    finally { setBusy(false); onBusyChange?.(false) }
   }
   async function remove(id: string) {
-    setBusy(true); setFailure('')
+    setBusy(true); onBusyChange?.(true); setFailure('')
     try { await deleteRow(client, 'milestones', project.id, id); onChange(milestones.filter(row => row.id !== id)); setRemoving(null); setNotice('Payment milestone deleted.') }
     catch { setFailure('Could not delete the payment milestone. Try again; the entry has been kept in the list.') }
-    finally { setBusy(false) }
+    finally { setBusy(false); onBusyChange?.(false) }
   }
   const calculated = expectedReceiptDate(values.invoice_date, values.payment_terms_days)
   const receipt = override ? values.receipt_override_date : calculated

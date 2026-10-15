@@ -7,8 +7,8 @@ import type { Errors, Expense, ExpenseValues } from '../lib/schedule'
 import { totalCents, validateExpense } from '../lib/schedule'
 import { deleteRow, saveExpense } from '../lib/schedule-api'
 import ScheduleField from './ScheduleField'
-type Props = { client: SupabaseClient; project: Project; expenses: Expense[]; onChange: (rows: Expense[]) => void }
-export default function ExpensePanel({ client, project, expenses, onChange }: Props) {
+type Props = { client: SupabaseClient; project: Project; expenses: Expense[]; onBusyChange?: (busy: boolean) => void; onChange: (rows: Expense[]) => void }
+export default function ExpensePanel({ client, project, expenses, onChange, onBusyChange }: Props) {
   const [editor, setEditor] = useState<Expense | 'new' | null>(null)
   const [values, setValues] = useState<ExpenseValues>({ description: '', amount: '', payment_date: '' })
   const [errors, setErrors] = useState<Errors<ExpenseValues>>({})
@@ -24,18 +24,18 @@ export default function ExpensePanel({ client, project, expenses, onChange }: Pr
     event.preventDefault()
     const result = validateExpense(values); setErrors(result.errors)
     if (!result.input) return
-    setBusy(true); setFailure('')
+    setBusy(true); onBusyChange?.(true); setFailure('')
     try {
       const saved = await saveExpense(client, project.id, result.input, editor && editor !== 'new' ? editor.id : undefined)
       onChange([...expenses.filter(row => row.id !== saved.id), saved]); setEditor(null); setNotice('Expense saved.')
     } catch { setFailure('Could not save the expense. Your entries are still here. Check your connection and try again.') }
-    finally { setBusy(false) }
+    finally { setBusy(false); onBusyChange?.(false) }
   }
   async function remove(id: string) {
-    setBusy(true); setFailure('')
+    setBusy(true); onBusyChange?.(true); setFailure('')
     try { await deleteRow(client, 'expenses', project.id, id); onChange(expenses.filter(row => row.id !== id)); setRemoving(null); setNotice('Expense deleted.') }
     catch { setFailure('Could not delete the expense. Try again; the entry has been kept in the list.') }
-    finally { setBusy(false) }
+    finally { setBusy(false); onBusyChange?.(false) }
   }
   return <section className="panel schedule-panel" aria-labelledby="expenses-title"><div className="section-top"><div><p className="eyebrow">STEP 02 · EXPECTED COSTS</p><h2 id="expenses-title">Expenses</h2></div><strong className="schedule-total">{money(totalCents(expenses))}</strong></div>
     <p className="muted schedule-intro">Enter what you expect to pay and when. All amounts {project.tax_basis === 'inclusive' ? 'include' : 'exclude'} GST.</p>
