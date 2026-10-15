@@ -29,6 +29,8 @@ The connected Cloudflare project is a Worker named `project-payment-planner`. It
 
 Build command: `npm run build`. Deploy command: `npx wrangler deploy`. Root directory: `/`. Set the two public `VITE_SUPABASE_*` values in **Builds → Variables and secrets**, not runtime variables. `.node-version` selects Node 22. Wrangler also runs the production build so direct CLI deployments work; the dashboard build may run it twice harmlessly.
 
+Branch previews run `npx wrangler preview`; the required `previews: {}` configuration enables this for the static app. It does not replace the production command `npx wrangler deploy`. Configure preview build variables separately, preferably against a test Supabase backend, and allow exact preview callback URLs there. Frontend Vite variables are compiled into the assets; Worker runtime bindings do not configure them.
+
 The committed `wrangler.jsonc` serves `dist` as static assets with SPA routing. Verify the package without publishing using `npx wrangler deploy --dry-run`. The hosted project schema was applied using the Supabase SQL editor as a single transaction; retain the versioned SQL migration as the source of truth. CLI migration history is not automatically populated by a SQL editor execution: do not reapply this migration blindly when first linking the CLI.
 
 Hosted environment is stored in ignored `.env.local`. The previous local public configuration is preserved in ignored `.env.local-backend`; `.env.test` still targets only the local test backend. Do not point the integration test at the hosted project.

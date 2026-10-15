@@ -78,8 +78,11 @@ Cloudflare build settings:
 | Production branch | `main` after the Sprint 1 merge |
 | Root directory | `/` |
 | Build command | `npm run build` |
-| Deploy command | `npx wrangler deploy` |
+| Production deploy command | `npx wrangler deploy` |
+| Branch preview command | `npx wrangler preview` |
 | Build variables | `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` |
+
+`wrangler.jsonc` includes the required empty `previews` block for Cloudflare branch previews. Static assets and build settings remain at the top level. Preview builds need their own public Supabase build variables; use a test backend for preview data and allow its exact callback URL before testing sign-in.
 
 The initial successful deployment used `sprint-1`. If Cloudflare is still tracking that branch, change its production branch to `main` so future main-branch commits deploy. This is a dashboard setting, separate from the Git merge.
 
