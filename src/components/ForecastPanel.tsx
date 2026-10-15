@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { forecastCash } from '../lib/forecast'
 import { displayDate, money, type Project } from '../lib/project'
 import { paymentSummary, type Expense, type Milestone } from '../lib/schedule'
+import ForecastChart from './ForecastChart'
 
 type Props = { project: Project; expenses: Expense[]; milestones: Milestone[] }
 
@@ -40,6 +41,7 @@ export default function ForecastPanel({ project, expenses, milestones }: Props) 
       <div><dt>Expected expenses</dt><dd>{money(forecast.expensesCents)}</dd></div>
       <div><dt>Closing cash</dt><dd className={forecast.closingCashCents < 0 ? 'negative' : ''}>{money(forecast.closingCashCents)}</dd></div>
     </dl>
+    <ForecastChart forecast={forecast}/>
     <details className="forecast-assumptions"><summary>How this forecast is calculated</summary><ul>
       <li>Starting cash is available immediately before the earliest date shown and is allocated only to this project.</li>
       <li>Receipts use expected receipt dates, including invoice terms or a saved override; completion and invoicing do not mean cash has arrived.</li>
