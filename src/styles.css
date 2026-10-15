@@ -111,3 +111,6 @@ main { max-width: 1390px; margin: 0 auto; padding: 43px 48px 24px; }.page-headin
 .chart-control { display: flex; flex-direction: column; gap: 4px; margin-top: 20px; font-size: 13px; color: #003e83; }.chart-control input { width: 100%; min-height: 44px; accent-color: #7e3075; }
 .chart-reading { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; margin: 8px 0 0; font-size: 14px; }.chart-reading strong { font-weight: 400; }.chart-reading > span { color: #92212e; }
 @media(max-width:520px) { .forecast-chart { padding: 18px 12px; }.forecast-chart h3 { font-size: 19px; }.chart-reading { flex-direction: column; } }
+
+.plan-panel { min-width: 0; }.plan-panel > .muted { margin-bottom: 24px; }.scenario-form { margin: 24px 0; }.comparison-table { width: 100%; border-collapse: collapse; table-layout: fixed; margin: 24px 0; font-size: 14px; }.comparison-table th,.comparison-table td { text-align: left; padding: 16px 10px; border-bottom: 1px solid #e3dfe4; overflow-wrap: anywhere; font-weight: 400; }.comparison-table thead { background: #f4edf3; color: #7e3075; }
+@media(max-width:520px) { .plan-panel { padding: 24px 18px; }.comparison-table { font-size: 13px; }.comparison-table td,.comparison-table th { padding: 14px 5px; } }
