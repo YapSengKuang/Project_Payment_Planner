@@ -10,6 +10,6 @@ The app supports Continue with Google through Supabase Auth. The button uses the
 
 Local Supabase needs a separate Google client configuration with its local callback if testing Google against the local backend. Do not disable authentication or email verification on the hosted backend to test this.
 
-Status: application integration and mocked error/retry tests are implemented. Provider credentials and a real Google consent round trip need account configuration and verification.
+Status: application integration and mocked error/retry tests are implemented. The hosted provider is now enabled. A real request initially failed with `redirect_uri_mismatch`; verify that the Google Cloud web client lists the exact Supabase callback above, then complete a real consent/sign-in round trip.
 
 Reference: https://supabase.com/docs/guides/auth/social-login/auth-google

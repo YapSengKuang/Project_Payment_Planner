@@ -1,12 +1,14 @@
 # Project Payment Planner
 
-Plan fixed-price projects before agreeing to client payment terms. The app currently supports email sign-in and private project setup; upcoming sprints add expenses, payment milestones and cash forecasting.
+Plan fixed-price projects before agreeing to client payment terms. The app supports email/Google sign-in, private project setup, expenses and expected deposit/milestone schedules. Cash forecasting is planned for Sprint 3.
 
 **Live app:** [Project Payment Planner](https://project-payment-planner.skorsengkuang.workers.dev/)
 
 ## Current progress
 
-Sprint 1 has been merged into `main` and includes:
+Sprint 1 is merged into `main`. Sprint 2 is implemented on `sprint-2`; it adds expenses, deposits, milestones, receipt-date calculations and payment-total checks. Google sign-in requires the provider setup described below.
+
+The foundation includes:
 
 - Passwordless email sign-in, session restoration and sign-out.
 - A private project list with create, edit, save and reopen.
@@ -16,7 +18,9 @@ Sprint 1 has been merged into `main` and includes:
 - Responsive phone, tablet and desktop layouts.
 - Cloudflare Workers hosting, automated checks and local ownership integration tests.
 
-Customer validation is still pending. Expenses, payment milestones, cash gap detection, scenarios, schedule versions and printable exports are not implemented yet.
+Customer validation is still pending. Cash gap detection, scenarios, schedule versions and printable exports are not implemented yet. See [Sprint 2 requirements and verification](docs/planning/sprint-2.md).
+
+For Google login, configure the [Google OAuth provider](docs/google-sign-in.md). The hosted provider is enabled, but its Google Cloud redirect URI must pass a real sign-in test before this is considered verified.
 
 ## Run locally
 
@@ -62,7 +66,7 @@ python3 scripts/check_reference_projects.py
 npm run test:integration
 ```
 
-The last recorded verification passed 19 unit/component tests, local two-account ownership checks and the production build. Responsive layouts were reviewed at 390px, 768px and 1440px. See [verification evidence and limits](docs/sprint-1-verification.md).
+The last recorded Sprint 2 verification passed 31 unit/component tests, local two-account project/schedule ownership checks and the production build. Responsive layouts were reviewed at 390px, 768px and 1440px. See [verification evidence and limits](docs/sprint-1-verification.md).
 
 GitHub Actions runs the application checks and local Supabase ownership tests. Unit tests do not require containers; ownership integration tests do. Integration checks create disposable test accounts and must not target production.
 
@@ -102,6 +106,7 @@ See [development and deployment instructions](docs/development.md) for migration
 - [Validation guide](docs/discovery/validation-guide.md)
 - [User journey and design](docs/planning/user-journey.md)
 - [Sprint 1 tickets](docs/planning/sprint-1.md)
+- [Sprint 2 requirements and verification](docs/planning/sprint-2.md)
 - [Progress and decisions](docs/planning/status.md)
 - [Synthetic reference projects](fixtures/reference-projects.json)
 
@@ -109,15 +114,15 @@ Original documents in `Project Plan/` remain unchanged.
 
 ## Version control
 
-Sprint 1 is merged. Current work continues on `main`.
+Sprint 1 is merged. Current Sprint 2 development is on `sprint-2`; production continues to deploy from `main`.
 
 ```sh
-git switch main
-git pull --ff-only origin main
+git switch sprint-2
+git pull --ff-only origin sprint-2
 # Make and review your changes.
 git add <files>
 git commit -m "Describe the change"
-git push origin main
+git push origin sprint-2
 ```
 
 Secrets, local configuration and build outputs are ignored. Keep identifiable interview data out of the repository.
