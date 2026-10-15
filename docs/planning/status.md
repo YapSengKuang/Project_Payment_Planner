@@ -29,3 +29,8 @@ Phone, tablet and desktop form layouts were reviewed in Chrome at 390px, 768px a
 Hosted email delivery and the complete hosted sign-in/save/reopen journey still require a real test using an allowed email address. Supabase custom SMTP is not configured; the default sender is limited to project team addresses. A custom email provider is needed before general-user pilot access. Discovery validation remains pending.
 
 Expenses, milestones, forecast, scenarios, versions and export are subsequent sprint work.
+
+
+## Sprint 2
+
+Expense CRUD, deposit/milestone CRUD, database-generated receipt dates, explained overrides, draft/complete totals and Google OAuth integration are implemented on `sprint-2`, each in a separate feature commit. See `sprint-2.md` for requirements, observed browser checks, local database checks and the outstanding Google redirect configuration. The hosted expense/milestone schema is applied; the production frontend remains on `main` until merge.

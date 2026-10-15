@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import Auth from './components/Auth'
 import ProjectForm from './components/ProjectForm'
+import ProjectDetails from './components/ProjectDetails'
 import { supabase } from './lib/supabase'
 import { displayDate, money } from './lib/project'
 import type { Project, ProjectInput } from './lib/project'
@@ -10,7 +11,7 @@ import { loadProjects, saveProject } from './lib/projects-api'
 export default function App() {
   const [session, setSession] = useState<Session | null>(null)
   const [authReady, setAuthReady] = useState(!supabase)
-  const [authError, setAuthError] = useState(() => new URLSearchParams(window.location.hash.slice(1)).has('error_description') ? 'This sign-in link is invalid or has expired. Request a new link below.' : '')
+  const [authError, setAuthError] = useState(() => new URLSearchParams(window.location.hash.slice(1)).has('error_description') ? 'Sign-in was cancelled or could not be completed. Try Google again or request a new email link.' : '')
   useEffect(() => {
     if (!supabase) return
     let active = true
@@ -77,7 +78,7 @@ function Workspace({ session }: { session: Session }) {
     const saved = await saveProject(supabase!, owner, input, editor && editor !== 'new' ? editor.id : undefined)
     if (!alive.current) return
     setProjects(existing => [saved, ...existing.filter(p => p.id !== saved.id)])
-    setEditor(null); setNotice('Project saved. You can reopen it below.'); setFailure('')
+    setEditor(editor === 'new' ? null : saved); setNotice('Project saved.'); setFailure('')
   }
   async function signOut() {
     setSigningOut(true); setFailure('')
@@ -93,10 +94,10 @@ function Workspace({ session }: { session: Session }) {
   return <><div className="account-strip"><span className="account-email">{session.user.email}</span><button className="text-button" disabled={signingOut} onClick={() => void signOut()}>{signingOut ? 'Signing out…' : 'Sign out'}</button></div>
     {notice && <p role="status" className="notice success">{notice}</p>}
     {failure && <div role="alert" className="notice error">{failure} <button className="text-button" onClick={() => { setLoading(true); setFailure(''); setRetry(v => v + 1) }}>Retry</button></div>}
-    {editor ? <ProjectForm key={editor === 'new' ? 'new' : editor.id} project={editor === 'new' ? undefined : editor} onSave={save} onCancel={() => setEditor(null)}/> : <>
+    {editor ? editor === 'new' ? <ProjectForm onSave={save} onCancel={() => setEditor(null)}/> : <ProjectDetails key={editor.id} client={supabase!} project={editor} onSave={save} onBack={() => { setEditor(null); setNotice('') }}/> : <>
     <section className="overview"><div><p className="eyebrow">YOUR PROJECT BOOK</p><h2>Start organised. Stay ahead.</h2><p>Set up a project with its price, dates and available cash.</p></div><button className="button" disabled={signingOut || loading} onClick={() => { setEditor('new'); setNotice('') }}>New project <span aria-hidden="true">＋</span></button></section>
     <section className="panel project-list" aria-labelledby="list-title"><div className="section-top"><h2 id="list-title">All projects <span className="count">{projects.length}</span></h2><span className="muted">Most recently updated</span></div>
       {loading ? <p role="status" className="empty-state">Loading your projects…</p> : projects.length === 0 ? <div className="empty-state"><span className="empty-symbol" aria-hidden="true">＋</span><h3>{failure ? 'Projects unavailable' : 'Your next project starts here'}</h3><p>{failure ? 'Retry loading your projects above.' : 'Add the essentials now. Build your payment plan as you go.'}</p>{!failure && <button className="button secondary" disabled={signingOut || loading} onClick={() => setEditor('new')}>Create your first project ↗</button>}</div> : <div>{projects.map(project => <article className="project-row" key={project.id}><div className="project-icon" aria-hidden="true">{project.name.charAt(0).toUpperCase()}</div><div className="project-title"><h3>{project.name}</h3><p>{project.client_name}</p></div><div className="project-dates"><small>PROJECT DATES</small><p>{displayDate(project.start_date)} – {displayDate(project.end_date)}</p></div><div className="project-price"><small>PROJECT PRICE</small><p>{money(project.price_cents)}</p></div><button className="button secondary" disabled={signingOut || loading} onClick={() => { setEditor(project); setNotice('') }}>Open<span className="sr-only"> {project.name}</span> ↗</button></article>)}</div>}
-    </section><div className="next-step"><span className="step-dot">01</span><p><strong>A solid foundation first.</strong> Expense entry, payment milestones and forecasting are planned for the next sprints.</p></div></>}
+    </section><div className="next-step"><span className="step-dot">01</span><p><strong>A solid foundation first.</strong> Open a project to enter expenses, deposits and payment milestones. Cash forecasting arrives in the next sprint.</p></div></>}
   </>
 }
