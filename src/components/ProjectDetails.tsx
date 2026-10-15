@@ -8,7 +8,7 @@ import ExpensePanel from './ExpensePanel'
 import MilestonePanel from './MilestonePanel'
 import ScheduleSummary from './ScheduleSummary'
 import ForecastPanel from './ForecastPanel'
-import PlanPanel from './PlanPanel'
+import PlanWorkspace from './PlanWorkspace'
 type Props = { client: SupabaseClient; project: Project; onSave: (input: ProjectInput) => Promise<void>; onBack: () => void }
 export default function ProjectDetails({ client, project, onSave, onBack }: Props) {
   const [tab, setTab] = useState('setup')
@@ -30,6 +30,6 @@ export default function ProjectDetails({ client, project, onSave, onBack }: Prop
     {failure && <p role="alert" className="notice error">{failure} <button className="text-button" onClick={() => { setFailure(''); setReady(false); setRetry(v => v + 1) }}>Retry schedule</button></p>}
     {ready && <ScheduleSummary project={project} expenses={expenses} milestones={milestones}/>}
     {!ready && !failure && <p role="status">Loading project schedule…</p>}
-    {tab === 'setup' ? <ProjectForm project={project} taxBasisLocked={!ready || expenses.length > 0 || milestones.length > 0} onSave={onSave} onCancel={onBack} onBusyChange={setWorking}/> : ready && (tab === 'expenses' ? <ExpensePanel client={client} project={project} expenses={expenses} onChange={setExpenses} onBusyChange={setWorking}/> : tab === 'milestones' ? <MilestonePanel client={client} project={project} milestones={milestones} onChange={setMilestones} onBusyChange={setWorking}/> : tab === 'forecast' ? <ForecastPanel project={project} expenses={expenses} milestones={milestones}/> : <PlanPanel baseline={{ project, expenses, milestones }}/>)}
+    {tab === 'setup' ? <ProjectForm project={project} taxBasisLocked={!ready || expenses.length > 0 || milestones.length > 0} onSave={onSave} onCancel={onBack} onBusyChange={setWorking}/> : ready && (tab === 'expenses' ? <ExpensePanel client={client} project={project} expenses={expenses} onChange={setExpenses} onBusyChange={setWorking}/> : tab === 'milestones' ? <MilestonePanel client={client} project={project} milestones={milestones} onChange={setMilestones} onBusyChange={setWorking}/> : tab === 'forecast' ? <ForecastPanel project={project} expenses={expenses} milestones={milestones}/> : <PlanWorkspace client={client} baseline={{ project, expenses, milestones }} onBusyChange={setWorking}/>)}
   </div>
 }

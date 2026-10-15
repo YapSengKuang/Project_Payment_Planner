@@ -117,3 +117,6 @@ main { max-width: 1390px; margin: 0 auto; padding: 43px 48px 24px; }.page-headin
 
 .deposit-limit { margin: 24px 0; max-width: 540px; }.proposal-payment { padding: 20px; margin-top: 24px; border: 1px solid #e3dfe4; border-radius: 8px; }.proposal-payment legend { padding: 0 8px; font-size: 18px; overflow-wrap: anywhere; max-width: 100%; }.proposal-payment > .muted { margin-bottom: 20px; }.proposal-payment > .field { margin-top: 20px; }.suggestion-box { border-left: 4px solid #7e3075; background: #f4edf3; padding: 20px; margin: 24px 0; border-radius: 6px; }.suggestion-box h3 { margin: 0 0 10px; }.suggestion-box p { font-size: 14px; }.plan-panel fieldset { min-width: 0; }
 @media(max-width:520px) { .proposal-payment { padding: 16px 12px; } }
+
+.revision-picker { margin-bottom: 24px; }.revision-picker > .field { margin-top: 20px; }.revision-picker .muted { margin-bottom: 20px; }.revision-save { margin-top: 28px; padding-top: 24px; border-top: 1px solid #e3dfe4; }.revision-save .field { margin: 20px 0; }.revision-save .muted { font-size: 14px; }
+@media(max-width:520px) { .revision-picker { padding: 24px 18px; } }

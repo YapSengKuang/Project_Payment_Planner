@@ -4,13 +4,17 @@ import { displayDate, money } from '../lib/project'
 import { paymentSummary } from '../lib/schedule'
 import ForecastChart from './ForecastChart'
 
-export default function PlanPanel({ baseline }: { baseline: PlanBaseline }) {
-  const [settings, setSettings] = useState<PlanSettings>(() => initialSettings(baseline.project.price_cents))
-  const [values, setValues] = useState(() => planValues(baseline, initialSettings(baseline.project.price_cents)))
+type Props = { baseline: PlanBaseline; savedSettings?: PlanSettings; sourceLabel?: string; onSaveRevision?: (name: string, settings: PlanSettings) => Promise<void>; onBusyChange?: (busy: boolean) => void }
+export default function PlanPanel({ baseline, savedSettings, sourceLabel = 'Current saved working schedule', onSaveRevision, onBusyChange }: Props) {
+  const [settings, setSettings] = useState<PlanSettings>(() => savedSettings ?? initialSettings(baseline.project.price_cents))
+  const [values, setValues] = useState(() => planValues(baseline, savedSettings ?? initialSettings(baseline.project.price_cents)))
+  const [revisionName, setRevisionName] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState('')
   const [explanation, setExplanation] = useState('')
   const [error, setError] = useState('')
   const [comparison, setComparison] = useState(() => {
-    try { return comparePlan(baseline, initialSettings(baseline.project.price_cents)) } catch { return null }
+    try { return comparePlan(baseline, savedSettings ?? initialSettings(baseline.project.price_cents)) } catch { return null }
   })
   const dirty = JSON.stringify(values) !== JSON.stringify(planValues(baseline, settings))
   const complete = paymentSummary(baseline.project.price_cents, baseline.milestones).complete
@@ -28,12 +32,21 @@ export default function PlanPanel({ baseline }: { baseline: PlanBaseline }) {
       setValues(planValues(baseline, suggestion.settings)); setExplanation(suggestion.explanation); setError('')
     } catch (cause) { setError(cause instanceof Error ? cause.message : 'Could not suggest a deposit change.') }
   }
+  async function save() {
+    if (!revisionName.trim() || revisionName.trim().length > 160) { setSaveError('Enter a revision name of 1 to 160 characters.'); return }
+    if (!onSaveRevision || dirty || !complete || !comparison) return
+    setSaving(true); onBusyChange?.(true); setSaveError('')
+    try { await onSaveRevision(revisionName.trim(), settings) }
+    catch (cause) { setSaveError(`Revision not saved. ${cause instanceof Error ? cause.message : 'Check your connection and retry.'} Your proposal inputs are retained.`) }
+    finally { setSaving(false); onBusyChange?.(false) }
+  }
   return <section className="panel plan-panel" aria-label="Plan and compare">
     <p className="eyebrow">EXPLORE BEFORE AGREEING</p><h2>Plan and compare</h2>
     <p className="muted">Explore changes against the saved schedule. Your working project is unchanged.</p>
+    <p className="summary-note">Source: {sourceLabel}. Save a named revision to preserve a proposal before leaving this section.</p>
     {!complete && <p className="notice">This schedule is incomplete. Match client payments to the project price before relying on a comparison.</p>}
     {!baseline.expenses.length && <p className="notice">No expenses entered. Funding needs may be understated.</p>}
-    <form onSubmit={update} className="scenario-form" noValidate>
+    <form onSubmit={update} className="scenario-form" noValidate><fieldset disabled={saving}>
       <div className="form-grid"><div className="field"><label htmlFor="receipt-delay">Delay all receipts (calendar days)</label><input id="receipt-delay" inputMode="numeric" value={values.delay} onChange={event => setValues({ ...values, delay: event.target.value })}/><small>0–365 days, including deposits and overridden receipts. Completion and invoice dates stay as recorded.</small></div>
         <div className="field"><label htmlFor="expense-increase">Increase all expenses (%)</label><input id="expense-increase" inputMode="numeric" value={values.increase} onChange={event => setValues({ ...values, increase: event.target.value })}/><small>0–100%. Each expense rounds to the nearest cent, with half cents rounded up.</small></div></div>
       <div className="field deposit-limit"><label htmlFor="deposit-cap">Maximum total deposits (AUD)</label><input id="deposit-cap" inputMode="decimal" value={values.cap} onChange={event => setValues({ ...values, cap: event.target.value })}/><small>Enter the limit agreed for this project, from zero to the project price. This is your planning constraint; no legal maximum is assumed.</small></div>
@@ -52,10 +65,10 @@ export default function PlanPanel({ baseline }: { baseline: PlanBaseline }) {
       })}
       {error && <p className="notice error" role="alert">{error}</p>}
       <div className="form-actions"><button type="submit" className="button">Update comparison</button></div>
-    </form>
+    </fieldset></form>
     {dirty && <p className="notice" role="status">Inputs changed. Update comparison to see their effect. Results below use the last applied settings.</p>}
     {comparison ? <>
-      <div className="suggestion-box"><h3>Try an earlier deposit allocation</h3><p>Preview moving funds from later milestones into an existing deposit expected by the first shortage. The total price and your deposit limit are respected; further funding may still be needed.</p><button type="button" className="button secondary" disabled={dirty || !complete} onClick={previewSuggestion}>Preview suggested deposit</button>{explanation && <p role="status">{explanation}</p>}</div>
+      <div className="suggestion-box"><h3>Try an earlier deposit allocation</h3><p>Preview moving funds from later milestones into an existing deposit expected by the first shortage. The total price and your deposit limit are respected; further funding may still be needed.</p><button type="button" className="button secondary" disabled={saving || dirty || !complete} onClick={previewSuggestion}>Preview suggested deposit</button>{explanation && <p role="status">{explanation}</p>}</div>
       <h3>Original versus proposal</h3><p className="muted">Applied scenario: receipts delayed {settings.receiptDelayDays} days; expenses increased {settings.expenseIncreasePercent}%.</p>
       <table className="comparison-table"><caption className="sr-only">Original and proposed cash forecast</caption><thead><tr><th scope="col">Measure</th><th scope="col">Original</th><th scope="col">Proposal</th></tr></thead><tbody>
         <tr><th scope="row">First shortage</th><td>{comparison.original.firstShortageDate ? displayDate(comparison.original.firstShortageDate) : 'None'}</td><td>{comparison.proposed.firstShortageDate ? displayDate(comparison.proposed.firstShortageDate) : 'None'}</td></tr>
@@ -65,6 +78,7 @@ export default function PlanPanel({ baseline }: { baseline: PlanBaseline }) {
       <p className="notice">{comparison.proposed.maximumGapCents > 0 ? `Remaining funding gap: ${money(comparison.proposed.maximumGapCents)}. This proposal still needs funding or further schedule changes.` : 'No daily closing funding gap in this proposal. Expected receipts are not guaranteed.'}</p>
       <ForecastChart forecast={comparison.proposed}/>
       <p className="summary-note">Starting cash is allocated to this project before the earliest date. Same-day movements are netted at daily close; intraday shortages are not shown. GST {baseline.project.tax_basis}; no unentered taxes or costs are added.</p>
+      {onSaveRevision && <div className="revision-save"><h3>Preserve this proposal</h3><p className="muted">A named revision saves the original inputs and this proposal together. It does not overwrite existing versions or update the working project.</p><div className="field"><label htmlFor="revision-name">Revision name</label><input id="revision-name" maxLength={160} value={revisionName} disabled={saving} onChange={event => setRevisionName(event.target.value)}/></div>{saveError && <p role="alert" className="notice error">{saveError}</p>}<button className="button" type="button" disabled={saving || dirty || !complete} onClick={() => void save()}>{saving ? 'Saving revision…' : 'Save named revision'}</button>{!complete && <p className="summary-note">Complete the original payment total before saving a revision.</p>}</div>}
     </> : <p className="notice error" role="alert">The saved schedule cannot be calculated safely. Review its amounts and dates.</p>}
   </section>
 }
