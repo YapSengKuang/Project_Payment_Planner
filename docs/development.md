@@ -25,7 +25,7 @@ The app uses passwordless email links; there is no password reset flow. Requesti
 
 ## Connected Cloudflare Worker
 
-The connected Cloudflare project is a Worker named `project-payment-planner`. Its failed build used `main`, which currently has planning files only. Deploy `sprint-1` until the application is merged to `main`.
+The connected Cloudflare project is a Worker named `project-payment-planner`. Its first failed build used `main` before application code was merged. Sprint 1 is now merged, and Cloudflare tracks `main` for production.
 
 Build command: `npm run build`. Deploy command: `npx wrangler deploy`. Root directory: `/`. Set the two public `VITE_SUPABASE_*` values in **Builds → Variables and secrets**, not runtime variables. `.node-version` selects Node 22. Wrangler also runs the production build so direct CLI deployments work; the dashboard build may run it twice harmlessly.
 

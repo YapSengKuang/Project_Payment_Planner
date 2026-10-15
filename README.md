@@ -84,7 +84,7 @@ Cloudflare build settings:
 
 `wrangler.jsonc` includes the required empty `previews` block for Cloudflare branch previews. Static assets and build settings remain at the top level. Preview builds need their own public Supabase build variables; use a test backend for preview data and allow its exact callback URL before testing sign-in.
 
-The initial successful deployment used `sprint-1`. If Cloudflare is still tracking that branch, change its production branch to `main` so future main-branch commits deploy. This is a dashboard setting, separate from the Git merge.
+The initial successful deployment used `sprint-1`. Cloudflare now tracks `main` as its production branch; other branches use preview deployments. This dashboard setting is separate from Git merges.
 
 For a local deployment-package check without publishing:
 
