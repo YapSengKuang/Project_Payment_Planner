@@ -2,22 +2,30 @@
 
 Date: 15 October 2026
 
-## Source interpretation
+## Sprint 0
 
-The v2 project plan begins with Validate, followed by Define. The MVP timeline expands this into Sprint 0 Validate and define, then Sprint 1 Foundation and project setup. This repository implements the preparatory work for that first step, rather than starting later application features. The design document controls future typography and palette.
+Scope, interview guide, synthetic scenarios, user journey and Sprint 1 tickets are prepared. Customer interviews, current alternatives research and real anonymised reference projects remain pending. Australian freelancers and small agencies remain an audience hypothesis. GST convention and other product rules remain provisional. Development was started at the owner's request while this validation remains open.
 
-## Prepared
+## Sprint 1 implementation
 
-- MVP scope and exclusions.
-- Initial audience and country hypothesis.
-- Interview and recruitment guide, evidence template and alternatives review method.
-- Four synthetic reference scenarios and an independent calculation checker.
-- User journey and design constraints.
-- Sprint 1 tickets with acceptance criteria.
-- Local Git version control with generated files and secrets ignored.
+React, TypeScript, Vite, Tailwind, Vitest and ESLint are configured with a committed dependency lockfile and GitHub checks. The interface uses bundled Didact Gothic and the supplied purple/blue/yellow palette.
 
-## Pending evidence and decisions
+Implemented passwordless email sign-in, resend and callback-error handling, session restoration, sign-out, private project listing, project create/edit/reopen, field validation and exact conversion into integer cents. The pilot supports AUD and a consistent GST convention per project. Pending and failed requests have visible states; failed saves preserve input.
 
-Customer interviews and recruitment have not been performed. Audience, demand and switching reasons remain unvalidated. Compare actual current alternatives and collect 3 to 5 real anonymised reference projects. Review the proposed tax, same-day transaction, date and version conventions in the scope. Set pilot numerical targets after research.
+Supabase migration includes database constraints, owner foreign keys, row-level policies for all CRUD operations and immutable ownership. Local Supabase runs through Docker. No service-role key is used by the frontend or integration tests. Public local configuration is generated into ignored environment files.
 
-Sprint 0 is not complete until its evidence gate is met. No production app, Supabase project, Cloudflare deployment or remote Git repository has been created. No participants have been contacted.
+See `docs/sprint-1-verification.md` for observed tests and limitations and `docs/development.md` for startup and deployment.
+
+## Deployment and responsive review
+
+The existing Cloudflare project is a Worker rather than Pages. It now deploys static Vite output from `sprint-1` using `wrangler.jsonc`. Deployment of application revision `b431419` succeeded at https://project-payment-planner.skorsengkuang.workers.dev and the site returned HTTP 200.
+
+The hosted Supabase schema and ownership policies were applied transactionally through its SQL editor. Exact production and local callback URLs were configured. An anonymous request to the hosted project table returned HTTP 401 with database permission denied, as intended. The two-account integration test remains confined to the local backend.
+
+Phone, tablet and desktop form layouts were reviewed in Chrome at 390px, 768px and 1440px, with measured document width matching viewport width. Phone sign-in and project list were also inspected. Small screens now use a top brand header, stacked fields and action buttons. Desktop retains the sidebar and two-column form.
+
+## Remaining acceptance work
+
+Hosted email delivery and the complete hosted sign-in/save/reopen journey still require a real test using an allowed email address. Supabase custom SMTP is not configured; the default sender is limited to project team addresses. A custom email provider is needed before general-user pilot access. Discovery validation remains pending.
+
+Expenses, milestones, forecast, scenarios, versions and export are subsequent sprint work.

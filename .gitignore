@@ -7,3 +7,9 @@ coverage/
 !.env.example
 tmp/
 *.log
+.env.test
+supabase/.temp/
+supabase/.branches/
+*.tsbuildinfo
+
+.wrangler/

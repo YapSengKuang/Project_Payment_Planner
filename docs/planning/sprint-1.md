@@ -1,6 +1,6 @@
 # Sprint 1 development tickets
 
-Entry condition: review discovery evidence and agree the unresolved scope conventions. This backlog prepares the first development sprint; these tickets are not implemented.
+Entry condition: review discovery evidence and agree the unresolved scope conventions. Implementation and verification status is recorded below. Discovery evidence remains pending; development proceeded at the owner's request.
 
 ## S1-01 Scaffold and checks
 
@@ -39,3 +39,8 @@ Configure the production build and preview deployment, Supabase public environme
 Acceptance: a preview URL loads over HTTPS and supports the sign-in/save/reopen journey; record isolation checks pass. Review responsive layouts and accessible labels. Record the deployed revision and test evidence.
 
 Sprint completion requires a real authenticated user saving and reopening a project and verified isolation. A scaffold or local-storage demo alone does not meet it.
+
+
+## Implementation status
+
+S1-01 through S1-05 are implemented and locally tested, including real local Supabase Auth and direct API ownership checks. Phone, tablet and desktop layouts have been reviewed in Chrome. S1-06 now has a successful Cloudflare Worker static deployment at https://project-payment-planner.skorsengkuang.workers.dev, hosted schema and redirect configuration. The full hosted email sign-in/save/reopen check remains pending; custom SMTP is required for general-user email delivery. See `../sprint-1-verification.md` for evidence and limits.

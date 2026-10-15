@@ -1,27 +1,48 @@
 # Project Payment Planner
 
-Help owners of fixed-price projects identify cash shortages before agreeing to deposits and milestone payments.
+A React and TypeScript application for setting up privately saved fixed-price projects. Sprint 1 includes passwordless email sign-in, an owned project list, and project create/edit/reopen with Supabase persistence. Later sprints add expenses, payment milestones and cash forecasting.
 
-## Current status
+## Run locally
 
-Sprint 0 preparation is complete. Customer validation is pending. No application or hosted services have been created yet.
+Requires Node.js 22.12+ and npm. For a local backend, Docker must be running.
 
-Start with [MVP scope](docs/planning/mvp-scope.md), then use the [validation guide](docs/discovery/validation-guide.md). Record evidence before treating the proposed audience or scope as confirmed.
+```sh
+npm ci
+npx supabase start
+node scripts/configure-local.mjs
+# Creates ignored .env.local and .env.test with public local configuration.
+npm run dev
+```
 
+Open the URL printed by Vite. Sign-in links appear in the local Supabase email viewer. Without backend configuration the app displays setup instructions. No demo account or browser-only persistence is substituted.
+
+See [development instructions](docs/development.md) for local email sign-in, migration management, integration checks and Cloudflare Pages deployment.
+
+## Checks
+
+```sh
+npm run lint
+npm run typecheck
+npm test
+npm run build
+python3 scripts/check_reference_projects.py
+# With a dedicated test backend configured in ignored .env.test:
+npm run test:integration
+```
+
+Continuous integration runs application checks and local Supabase ownership checks. Authentication and database tests need the local containers; unit tests do not.
+
+## Planning
+
+- [MVP scope](docs/planning/mvp-scope.md)
+- [Validation guide](docs/discovery/validation-guide.md)
 - [User journey and design](docs/planning/user-journey.md)
-- [Reference projects](fixtures/reference-projects.json)
 - [Sprint 1 tickets](docs/planning/sprint-1.md)
 - [Progress and decisions](docs/planning/status.md)
-- Original documents: `Project Plan/` (retained unchanged; v2 plan and MVP timeline take precedence over v1).
+- [Synthetic reference projects](fixtures/reference-projects.json)
 
-## Check reference calculations
+Original documents in `Project Plan/` remain unchanged. Customer validation remains pending.
 
-Run `python3 scripts/check_reference_projects.py`. This uses the Python standard library and checks the discovery examples independently of any future application engine.
+## Version control
 
-## Planned application stack
-
-React, TypeScript, Vite, Tailwind CSS, Supabase Auth/PostgreSQL with row-level security, Cloudflare Pages, and Vitest. Implementation begins in Sprint 1 after discovery decisions are reviewed.
-
-## Save changes
-
-This folder is a local Git repository. Use `git status`, `git add <files>`, and `git commit -m "Describe the change"`. A remote backup is not configured; a local commit does not protect against loss of this computer. Do not commit secrets or identifiable interview data.
+Work is on `sprint-1`. Use `git status`, `git add <files>`, `git commit -m "Describe the change"` and `git push`. Secrets, local configuration and build outputs are ignored. Do not commit identifiable interview data.
