@@ -1,14 +1,16 @@
 # Project Payment Planner
 
-Plan fixed-price projects before agreeing to client payment terms. The app supports email/Google sign-in, private project setup, expenses and expected deposit/milestone schedules. Cash forecasting is planned for Sprint 3.
+Plan fixed-price projects before agreeing to client payment terms. The app supports email/Google sign-in, private project setup, expenses and expected deposit/milestone schedules. The Forecast screen shows daily cash balances, first shortages and maximum funding gaps.
 
 **Live app (main):** [Project Payment Planner](https://project-payment-planner.skorsengkuang.workers.dev/)
 
 **Sprint 2 preview:** [Try expenses and payment milestones](https://sprint-2-project-payment-planner.skorsengkuang.workers.dev/)
 
+**Sprint 3 preview:** [Try cash forecasts and funding gaps](https://sprint-3-project-payment-planner.skorsengkuang.workers.dev/)
+
 ## Current progress
 
-Sprint 1 is merged into `main`. Sprint 2 is implemented on `sprint-2`; it adds expenses, deposits, milestones, receipt-date calculations and payment-total checks. Google sign-in requires the provider setup described below.
+Sprint 1 is merged into `main`. Sprint 2 adds expenses, deposits, milestones, receipt-date calculations and payment-total checks. Sprint 3 is implemented locally on `sprint-3`, based on Sprint 2; it adds cash forecasting, funding-gap detection and an interactive balance chart. Google sign-in requires the provider setup described below.
 
 The foundation includes:
 
@@ -20,7 +22,7 @@ The foundation includes:
 - Responsive phone, tablet and desktop layouts.
 - Cloudflare Workers hosting, automated checks and local ownership integration tests.
 
-Customer validation is still pending. Cash gap detection, scenarios, schedule versions and printable exports are not implemented yet. See [Sprint 2 requirements and verification](docs/planning/sprint-2.md).
+Customer validation is still pending. Scenarios, schedule versions and printable exports remain Sprint 4 work. See [Sprint 3 requirements and verification](docs/planning/sprint-3.md). Forecasts use saved expected receipt dates and daily closing balances; they do not confirm payment or detect intraday shortages.
 
 For Google login, configure the [Google OAuth provider](docs/google-sign-in.md). The hosted provider is enabled, but its Google Cloud redirect URI must pass a real sign-in test before this is considered verified.
 
@@ -68,7 +70,7 @@ python3 scripts/check_reference_projects.py
 npm run test:integration
 ```
 
-The last recorded Sprint 2 verification passed 31 unit/component tests, local two-account project/schedule ownership checks and the production build. Responsive layouts were reviewed at 390px, 768px and 1440px. See [verification evidence and limits](docs/sprint-1-verification.md).
+Sprint 3 verification passed 46 unit/component tests, all four reference forecasts, lint, TypeScript and the production build. Local browser checks confirmed forecast recalculation after saving, reload/reopen and layouts at 390px, 768px and 1440px. Sprint 2 previously passed local two-account project/schedule ownership checks. See [Sprint 3 evidence and limits](docs/planning/sprint-3.md).
 
 GitHub Actions runs the application checks and local Supabase ownership tests. Unit tests do not require containers; ownership integration tests do. Integration checks create disposable test accounts and must not target production.
 
@@ -109,6 +111,7 @@ See [development and deployment instructions](docs/development.md) for migration
 - [User journey and design](docs/planning/user-journey.md)
 - [Sprint 1 tickets](docs/planning/sprint-1.md)
 - [Sprint 2 requirements and verification](docs/planning/sprint-2.md)
+- [Sprint 3 requirements and verification](docs/planning/sprint-3.md)
 - [Progress and decisions](docs/planning/status.md)
 - [Synthetic reference projects](fixtures/reference-projects.json)
 
@@ -116,15 +119,15 @@ Original documents in `Project Plan/` remain unchanged.
 
 ## Version control
 
-Sprint 1 is merged. Current Sprint 2 development is on `sprint-2`; production continues to deploy from `main`.
+Sprint 1 is merged. Current development is on `sprint-3`, based on Sprint 2; production continues to deploy from `main`. Sprint 3 has a separate Cloudflare preview; its full hosted authenticated acceptance remains pending.
 
 ```sh
-git switch sprint-2
-git pull --ff-only origin sprint-2
+git switch sprint-3
+git pull --ff-only origin sprint-3
 # Make and review your changes.
 git add <files>
 git commit -m "Describe the change"
-git push origin sprint-2
+git push origin sprint-3
 ```
 
 Secrets, local configuration and build outputs are ignored. Keep identifiable interview data out of the repository.
