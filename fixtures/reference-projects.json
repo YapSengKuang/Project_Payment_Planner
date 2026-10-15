@@ -1,0 +1,39 @@
+{
+  "currency": "AUD",
+  "tax_basis": "GST inclusive",
+  "convention": "Synthetic discovery examples; integer cents; daily closing balances; calendar dates.",
+  "projects": [
+    {
+      "id": "no-gap",
+      "price_cents": 1000000,
+      "starting_cash_cents": 0,
+      "receipts": [{"date": "2026-11-01", "amount_cents": 400000}, {"date": "2026-11-15", "amount_cents": 600000}],
+      "expenses": [{"date": "2026-11-05", "amount_cents": 300000}, {"date": "2026-11-20", "amount_cents": 400000}],
+      "expected": {"first_shortage_date": null, "maximum_gap_cents": 0, "closing_cash_cents": 300000}
+    },
+    {
+      "id": "deposit-shortfall-plan-example",
+      "price_cents": 1000000,
+      "starting_cash_cents": 0,
+      "receipts": [{"date": "2026-11-01", "amount_cents": 200000}, {"date": "2026-11-15", "amount_cents": 800000}],
+      "expenses": [{"date": "2026-11-05", "amount_cents": 300000}, {"date": "2026-11-20", "amount_cents": 400000}],
+      "expected": {"first_shortage_date": "2026-11-05", "maximum_gap_cents": 100000, "closing_cash_cents": 300000}
+    },
+    {
+      "id": "seven-day-late-receipt",
+      "price_cents": 1000000,
+      "starting_cash_cents": 0,
+      "receipts": [{"date": "2026-11-01", "amount_cents": 400000}, {"date": "2026-11-22", "amount_cents": 600000}],
+      "expenses": [{"date": "2026-11-05", "amount_cents": 300000}, {"date": "2026-11-20", "amount_cents": 400000}],
+      "expected": {"first_shortage_date": "2026-11-20", "maximum_gap_cents": 300000, "closing_cash_cents": 300000}
+    },
+    {
+      "id": "same-day-with-starting-cash",
+      "price_cents": 1000000,
+      "starting_cash_cents": 100000,
+      "receipts": [{"date": "2026-11-05", "amount_cents": 200000}, {"date": "2026-11-15", "amount_cents": 800000}],
+      "expenses": [{"date": "2026-11-05", "amount_cents": 300000}, {"date": "2026-11-20", "amount_cents": 400000}],
+      "expected": {"first_shortage_date": null, "maximum_gap_cents": 0, "closing_cash_cents": 400000}
+    }
+  ]
+}
