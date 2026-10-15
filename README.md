@@ -1,56 +1,83 @@
 # Project Payment Planner
 
-Plan fixed-price projects before agreeing to client payment terms. The app supports email/Google sign-in, private project setup, expenses and expected deposit/milestone schedules. The Forecast screen shows daily cash balances, first shortages and maximum funding gaps.
+A project can look profitable on paper and still leave you wondering how to pay for the work before the client pays you.
 
-**Live app (main):** [Project Payment Planner](https://project-payment-planner.skorsengkuang.workers.dev/)
+That’s the problem this project explores. Project Payment Planner helps owners lay out their costs and expected client payments, spot a cash shortage, and try a different payment schedule before agreeing to the work.
 
-**Sprint 2 preview:** [Try expenses and payment milestones](https://sprint-2-project-payment-planner.skorsengkuang.workers.dev/)
+[Try the app](https://project-payment-planner.skorsengkuang.workers.dev/) · [Explore the Sprint 4 demo](https://sprint-4-project-payment-planner.skorsengkuang.workers.dev/) · [Current sprint](docs/planning/sprint-5.md)
 
-**Sprint 3 preview:** [Try cash forecasts and funding gaps](https://sprint-3-project-payment-planner.skorsengkuang.workers.dev/)
+## Where the idea started
 
-**Sprint 4 preview:** [Try proposals, scenarios and saved revisions](https://sprint-4-project-payment-planner.skorsengkuang.workers.dev/)
+The starting point was a broader question: where could a small financial tool help a small business owner?
 
-## Try every feature with demo data
+We explored five directions: cash-flow scenarios, invoice follow-ups, income allocation, seasonal planning, and project deposits and milestones. The last one gave us a specific moment to design around: an owner preparing a quote and deciding when to ask the client to pay.
 
-After signing in, click **Load demo projects** on the project list. It creates two private, editable fictional projects:
+A simple example made the problem concrete. Imagine a $10,000 project with $3,000 of materials to buy before the next client payment. A $2,000 deposit leaves a $1,000 hole. Seeing that early gives the owner something useful to discuss with the client.
 
-- **Website redesign:** three expenses, a deposit, two milestones, invoice terms and an explained receipt override. Its original forecast has a $2,500 maximum funding gap.
-- **Plan & compare:** open the four saved revisions to compare original terms, a larger deposit (no gap), a capped deposit ($1,000 gap), and seven-day receipt delays with 10% higher costs ($3,300 gap). Edit a proposal, save another revision and try Print / Save as PDF.
-- **Incomplete draft:** starting cash and a partially allocated payment schedule demonstrate draft warnings and $6,800 still to allocate.
+The early planning drew on EY research about small-business financial needs. That helped frame the problem, but customer interviews and a review of current alternatives are still needed. Australian freelancers and small agencies doing fixed-price work are our starting audience hypothesis.
 
-Dates start from your local calendar day on first creation. Repeated clicks reopen the same projects and preserve your edits. Existing projects are untouched. These are synthetic examples, not customer validation. The additive `202610160005_demo_projects.sql` migration is required; creation is atomic and restricted to the signed-in owner.
+## Designing the journey
 
-## Sprint 5 release readiness
+Before building the screens, we mapped the path an owner would take:
 
-Development continues on `sprint-5` from merged main. Release deployments now validate public Supabase settings before bundling; missing configuration and secret/service-role keys stop the build. Run `npm run check:release` for the frontend release checks, then `npm run test:integration` against local Supabase for ownership and revision checks. Disposable integration data is now restricted to localhost.
+**Projects → Setup → Expenses → Milestones → Forecast → Plan & compare → Export**
 
-See the [Sprint 5 scope and evidence](docs/planning/sprint-5.md), [pilot session guide](docs/pilot/session-guide.md) and [release checklist](docs/pilot/release-checklist.md). Real participant sessions, manual PDF inspection, candidate mobile/authentication checks and actual dashboard quota review remain open. Sprint 5 is not complete or cleared for general release.
+Each step answers a question. What’s the project worth? What needs paying, and when? When do we expect the client’s money? Where does cash run short? What could we change?
 
-## Current progress
+That shaped both the forms and the calculations. Milestone completion, invoicing and receiving money are separate dates. Starting cash means money available for this particular project. The forecast uses expected receipts and shows its assumptions alongside the result.
 
-Sprint 1 is merged into `main`. Sprint 2 adds expenses, deposits, milestones, receipt-date calculations and payment-total checks. Sprint 3 adds cash forecasting, funding-gap detection and an interactive balance chart. Sprint 4 is implemented on `sprint-4` from merged `main`, adding payment proposals, constrained deposit suggestions, scenarios, immutable named revisions and printable plans. Google sign-in requires the provider setup described below.
+We also chose a visual direction early: **Didact Gothic**, purple for primary actions, blue for supporting emphasis, small yellow accents, and a light grey background. The aim was a calm workspace with readable forms and clear next steps. On smaller screens, the layout stacks so the same journey works on a phone. Shortages and errors have written explanations as well as colour.
 
-The foundation includes:
+The [design and journey notes](docs/planning/user-journey.md) capture those choices.
 
-- Passwordless email sign-in, session restoration and sign-out.
-- A private project list with create, edit, save and reopen.
-- Project price, available starting cash, client, dates and GST convention.
-- AUD amounts stored as integer cents, with browser and database validation.
-- Supabase ownership policies for reading and changing records.
-- Responsive phone, tablet and desktop layouts.
-- Cloudflare Workers hosting, automated checks and local ownership integration tests.
+## How we built it up
 
-Customer validation is still pending. Sprint 4 includes scenarios, saved revisions and browser print export; final hosted and PDF layout acceptance remain pending. See [Sprint 3 requirements and verification](docs/planning/sprint-3.md). Forecasts use saved expected receipt dates and daily closing balances; they do not confirm payment or detect intraday shortages.
+We built the app in small sprints, following the planning journey.
 
-For Google login, configure the [Google OAuth provider](docs/google-sign-in.md). The hosted provider is enabled, but its Google Cloud redirect URI must pass a real sign-in test before this is considered verified.
+**First, somewhere to keep the work.** Sprint 1 established sign-in, private projects, setup forms and saved data. We chose React and TypeScript for the interface, Supabase for accounts and PostgreSQL, and Cloudflare for hosting. The plan originally named Cloudflare Pages; the connected deployment became a Worker serving static assets.
 
-## Run locally
+**Then, the actual schedule.** Sprint 2 added expenses, deposits, milestones and payment terms, plus Google sign-in. Owners could enter a complete schedule and see whether client payments matched the project price. Money is stored in integer cents, with validation in both the interface and database.
 
-Requires Node.js 22.12+ and npm. Docker must be running for the local Supabase backend.
+**Then, the useful question: when do we run short?** Sprint 3 turned those saved entries into a cash timeline, balance chart, first shortage date and maximum funding gap. We checked the calculations against independently worked examples, including the original $1,000 shortfall.
 
-### With a local database
+**Then, room to try another plan.** Sprint 4 added payment adjustments, deposit suggestions, late-receipt and higher-cost scenarios, and original-versus-proposal comparisons. Named revisions preserve the inputs and assumptions, so trying something new doesn’t overwrite an earlier version. Browser print provides a plan for client discussion.
 
-From a fresh checkout:
+We also added editable demo projects. They make it easier to explore a complete example and an unfinished draft without entering everything from scratch.
+
+**Now, seeing how it holds up.** Sprint 5 focuses on pilot and release readiness. We’ve added deployment configuration checks and safeguards that keep disposable integration data on local databases. The next evidence needs to come from people using the app: can they find the gap, improve a schedule, and produce a readable plan independently?
+
+## What we learned along the way
+
+A few details turned out to matter a lot:
+
+- **Payment timing needs its own model.** Finishing a milestone doesn’t mean the money has arrived. Invoice terms and explained receipt-date overrides belong in the schedule.
+- **A suggestion needs an explanation.** Moving money into an earlier deposit can help, but a deposit cap may leave a remaining shortage. The app shows that residual gap.
+- **Versions need to preserve context.** A saved proposal keeps its original costs, payment schedule and scenario settings, even when the working project changes later.
+- **A successful deployment needs a working configuration.** An earlier preview built successfully without Supabase settings and displayed a setup screen. Release builds now stop when those settings are missing or unsuitable for the browser.
+- **Tests and demo data answer only part of the question.** They help verify behaviour. Observing real owners will tell us whether the workflow makes sense to them.
+
+## Have a look around
+
+Sign in and choose **Load demo projects** from the project list. You’ll get two private, editable fictional projects:
+
+- **Website redesign:** expenses, a deposit, two milestones and a receipt override. Its original forecast has a $2,500 maximum gap. Four saved revisions show the original terms, a larger deposit, a capped deposit, and late payments with higher costs.
+- **Incomplete draft:** starting cash and a partially allocated payment schedule show the draft warnings and what still needs entering.
+
+Dates start from your local calendar day when first created. Loading the examples again reopens them and preserves your edits.
+
+## Where things stand
+
+Sprints 1–4 are merged into `main`. Current development is on **`sprint-5`**. The app supports AUD, a consistent GST convention per project, manual schedule entry, forecasts, proposals, saved revisions and browser print.
+
+The current checks include 65 unit/component tests, independent reference forecasts, release configuration checks and local database tests for ownership and revisions. Forecasts use daily closing balances; they don’t track confirmed payments or shortages within a day.
+
+The pilot is still ahead: 3–5 real-user sessions, a visual check of saved PDFs, candidate mobile and authentication checks, and a review of actual service usage. General-user email sign-in also needs a configured email provider. The [release checklist](docs/pilot/release-checklist.md) keeps those open items visible.
+
+Bank connections, payment processing, reminders, client portals and combined forecasts across projects remain outside this MVP.
+
+## Run it locally
+
+You’ll need Node.js 22.12+, npm and Docker for local Supabase.
 
 ```sh
 npm ci
@@ -59,94 +86,34 @@ node scripts/configure-local.mjs
 npm run dev
 ```
 
-The configuration script creates ignored `.env.local` and `.env.test` files containing only public local configuration. It refuses to overwrite existing files; if you already have configuration, preserve it and update the files manually for the backend you want to use.
+The configuration script creates ignored `.env.local` and `.env.test` files with public local settings and refuses to overwrite existing files. Open the address Vite prints, usually [127.0.0.1:5173](http://127.0.0.1:5173). Local sign-in emails appear in the [email viewer](http://127.0.0.1:54324/).
 
-Open the URL printed by Vite, usually [http://127.0.0.1:5173](http://127.0.0.1:5173). Request a sign-in link in the app, then open it from the [local email viewer](http://127.0.0.1:54324/). Local emails are captured rather than sent externally.
-
-### With a hosted Supabase project
-
-Copy `.env.example` to `.env.local` if the latter does not already exist. Set:
-
-```dotenv
-VITE_SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
-VITE_SUPABASE_PUBLISHABLE_KEY=YOUR_PUBLIC_PUBLISHABLE_KEY
-```
-
-Apply the database migration to a new project and configure its authentication redirects before using it. The existing hosted project already has the initial schema; do not reapply that migration blindly. Run `npm run dev` and restart the server after changing environment variables. Never use a secret or service-role key in frontend configuration.
-
-Keep `.env.test` pointed at a local or dedicated test backend. Without valid app configuration, the interface displays setup instructions.
-
-## Checks
+For hosted Supabase, migrations, Google sign-in and Cloudflare configuration, follow the [development guide](docs/development.md) and [Google sign-in guide](docs/google-sign-in.md). Frontend configuration must use a public publishable or legacy anon key.
 
 ```sh
+# Frontend checks; no containers needed
 npm run lint
-npm run typecheck
 npm test
 npm run build
-python3 scripts/check_reference_projects.py
-# Requires a dedicated test backend configured in ignored .env.test:
+
+# Configured release checks
+npm run check:release
+
+# Database checks; local Supabase and .env.test required
 npm run test:integration
 ```
 
-Sprint 4 verification passed 58 unit/component tests, local two-account ownership/revision checks, all four reference forecasts, lint, TypeScript and the production build. Local browser checks confirmed forecast recalculation after saving, reload/reopen and layouts at 390px, 768px and 1440px. Sprint 2 previously passed local two-account project/schedule ownership checks. See [Sprint 4 evidence and limits](docs/planning/sprint-4.md).
+Integration tests create disposable local accounts and records, remove their test projects, and refuse hosted database URLs. Auth accounts remain until the local database is reset.
 
-GitHub Actions runs the application checks and local Supabase ownership tests. Unit tests do not require containers; ownership integration tests do. Integration checks create disposable test accounts and must not target production.
+## Follow the decisions
 
-## Deployment
+The original planning files live in [Project Plan](Project%20Plan/). The working notes show how those ideas became the app:
 
-The live app uses **Cloudflare Workers with static assets** and Supabase Auth/PostgreSQL. `wrangler.jsonc` builds the app and serves `dist` with single-page application routing.
+- [MVP scope and boundaries](docs/planning/mvp-scope.md)
+- [Customer discovery guide](docs/discovery/validation-guide.md)
+- [User journey and visual direction](docs/planning/user-journey.md)
+- [Progress and decisions across the sprints](docs/planning/status.md)
+- [Sprint 5 plan](docs/planning/sprint-5.md) and [pilot session guide](docs/pilot/session-guide.md)
+- [Reference calculation examples](fixtures/reference-projects.json)
 
-Cloudflare build settings:
-
-| Setting | Value |
-| --- | --- |
-| Repository | `YapSengKuang/Project_Payment_Planner` |
-| Production branch | `main` after the Sprint 1 merge |
-| Root directory | `/` |
-| Build command | `npm run build` |
-| Production deploy command | `npx wrangler deploy` |
-| Branch preview command | `npx wrangler preview` |
-| Build variables | `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` |
-
-`wrangler.jsonc` includes the required empty `previews` block for Cloudflare branch previews. Static assets and build settings remain at the top level. Preview builds need their own public Supabase build variables; use a test backend for preview data and allow its exact callback URL before testing sign-in.
-
-The initial successful deployment used `sprint-1`. Cloudflare now tracks `main` as its production branch; other branches use preview deployments. This dashboard setting is separate from Git merges.
-
-For a local deployment-package check without publishing:
-
-```sh
-npx wrangler deploy --dry-run
-```
-
-Supabase's site URL and allowed redirects must include the deployed origin. Custom SMTP is not configured on the hosted project: use a Supabase project team email for initial sign-in testing; general-user email delivery needs a custom email provider. The full hosted sign-in/save/reopen journey remains to be verified.
-
-See [development and deployment instructions](docs/development.md) for migrations, local services, environment configuration and rollback.
-
-## Project documents
-
-- [MVP scope](docs/planning/mvp-scope.md)
-- [Validation guide](docs/discovery/validation-guide.md)
-- [User journey and design](docs/planning/user-journey.md)
-- [Sprint 1 tickets](docs/planning/sprint-1.md)
-- [Sprint 2 requirements and verification](docs/planning/sprint-2.md)
-- [Sprint 3 requirements and verification](docs/planning/sprint-3.md)
-- [Sprint 4 requirements and verification](docs/planning/sprint-4.md)
-- [Progress and decisions](docs/planning/status.md)
-- [Synthetic reference projects](fixtures/reference-projects.json)
-
-Original documents in `Project Plan/` remain unchanged.
-
-## Version control
-
-Sprint 1 is merged. Current development is on `sprint-4`, based on merged `main`; production continues to deploy from `main`. Sprint 3 has a separate Cloudflare preview; its full hosted authenticated acceptance remains pending.
-
-```sh
-git switch sprint-4
-git pull --ff-only origin sprint-4
-# Make and review your changes.
-git add <files>
-git commit -m "Describe the change"
-git push origin sprint-4
-```
-
-Secrets, local configuration and build outputs are ignored. Keep identifiable interview data out of the repository.
+This is still a project in progress. The next chapter is finding out what real owners understand, struggle with, and would change before using it for a quote.
