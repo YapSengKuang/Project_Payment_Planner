@@ -19,3 +19,44 @@ main { max-width: 1390px; margin: 0 auto; padding: 43px 48px 24px; }.page-headin
 @media(max-width:1100px) { .sidebar { width: 190px; padding: 30px 17px; } main { padding: 32px 28px 20px; }.topbar { padding: 0 28px; }.intro-card { padding: 26px; }.intro-card h2 { font-size: 30px; }.auth-panel { padding: 30px 25px; }.project-dates { display: none; } }
 @media(max-width:780px) { .sidebar { width: 80px; padding: 22px 14px; align-items: center; }.brand > span:last-child,.nav-caption,.nav-item,.sidebar-note { display: none; }.brand-mark { width: 43px; }.topbar { height: 65px; padding: 0 22px; }main { padding: 28px 22px 18px; }.welcome-grid { grid-template-columns: 1fr; }.intro-card { display: none; }.auth-panel { padding: 30px; }.chapter { font-size: 60px; }.form-grid { gap: 20px; }.overview { padding: 22px; flex-wrap: wrap; }.section-top > .muted { font-size: 11px; }.project-list { padding: 23px; }.project-row { gap: 12px; flex-wrap: wrap; }.project-price { min-width: auto; }.project-icon { display: none; }.project-row .button { padding: 9px 12px; }.page-footer { flex-wrap: wrap; } }
 @media(max-width:520px) { .sidebar { width: 60px; padding: 22px 8px; }.brand-mark { width: 36px; height: 40px; font-size: 34px; border-radius: 8px; }.brand-mark span { font-size: 17px; }.topbar { padding: 0 16px; font-size: 11px; }.breadcrumb { margin-left: 5px; }.pilot-badge { font-size: 8px; padding: 5px 8px; }main { padding: 25px 16px; }.eyebrow { font-size: 8px; letter-spacing: 1.2px; }h1 { font-size: 34px; }.chapter { display: none; }.page-heading .muted { font-size: 12px; }.auth-panel,.form-panel { padding: 24px 18px; }.auth-panel h2 { font-size: 27px; }.form-grid { grid-template-columns: 1fr; }.section-top { align-items: flex-start; }.step-label { display: none; }.section-top h2 { font-size: 19px; }.project-row { display: grid; grid-template-columns: 1fr auto; }.project-price { text-align: left; }.project-row .button { grid-column: 2; grid-row: 1 / 3; }.project-title h3 { font-size: 16px; }.account-strip { font-size: 11px; gap: 8px; }.form-actions { gap: 8px; }.button { gap: 10px; }.page-footer { font-size: 10px; }.section-top > .muted { display: none; } }
+
+/* Keep project details readable as the workspace narrows. */
+.welcome-grid, .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.field, .section-top > div, .overview > div, .account-email { min-width: 0; }
+.field input, .field select { font-size: 16px; }
+.account-email, .notice, .empty-state p { overflow-wrap: anywhere; }
+.text-button { min-height: 44px; }
+@media (max-width: 1100px) {
+  .project-row { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; }
+  .project-icon { grid-row: 1 / 3; padding: 9px 12px; text-align: center; }
+  .project-price { grid-column: 2; text-align: left; }
+  .project-row > .button { grid-column: 3; grid-row: 1 / 3; }
+}
+@media (max-width: 780px) {
+  .welcome-grid { grid-template-columns: minmax(0, 1fr); }
+  .project-row { grid-template-columns: minmax(0, 1fr) auto; }
+  .project-price { grid-column: 1; }
+  .project-row > .button { grid-column: 2; }
+  .form-grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 520px) {
+  .app-shell { display: block; }
+  .sidebar { width: 100%; min-height: auto; padding: 12px 20px; flex-direction: row; border-right: 0; border-bottom: 1px solid #e7e4e7; }
+  .brand > span:last-child { display: block; font-size: 18px; }
+  .topbar { min-height: 54px; height: auto; gap: 12px; padding-block: 10px; }
+  main { padding: 26px 20px; }
+  .page-heading { margin-bottom: 24px; }
+  .account-strip { justify-content: space-between; font-size: 13px; }
+  .field small, .fine-print, .page-footer { font-size: 12px; }
+  .form-actions { flex-direction: column-reverse; }
+  .form-actions > .button { width: 100%; }
+  .project-list { padding: 20px; }
+  .project-row { gap: 12px; }
+  .project-price p { font-size: 16px; }
+  .overview > .button { width: 100%; }
+  .empty-state { padding: 32px 0; }
+  .empty-state .button { white-space: normal; }
+  .next-step { align-items: flex-start; }
+  .step-dot { flex-shrink: 0; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; } }

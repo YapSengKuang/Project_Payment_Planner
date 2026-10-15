@@ -11,3 +11,5 @@ tmp/
 supabase/.temp/
 supabase/.branches/
 *.tsbuildinfo
+
+.wrangler/

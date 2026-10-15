@@ -23,7 +23,19 @@ For isolation checks, create an ignored `.env.test` containing `SUPABASE_URL` an
 
 The app uses passwordless email links; there is no password reset flow. Requesting a fresh link recovers access. Email link failures show a retry path. Records are cleared from the rendered workspace when accounts change or sign out. A database migration enforces ownership on select/insert/update/delete, blocks owner reassignment, and validates money and dates independently of the browser.
 
-## Cloudflare Pages
+## Connected Cloudflare Worker
+
+The connected Cloudflare project is a Worker named `project-payment-planner`. Its failed build used `main`, which currently has planning files only. Deploy `sprint-1` until the application is merged to `main`.
+
+Build command: `npm run build`. Deploy command: `npx wrangler deploy`. Root directory: `/`. Set the two public `VITE_SUPABASE_*` values in **Builds → Variables and secrets**, not runtime variables. `.node-version` selects Node 22. Wrangler also runs the production build so direct CLI deployments work; the dashboard build may run it twice harmlessly.
+
+The committed `wrangler.jsonc` serves `dist` as static assets with SPA routing. Verify the package without publishing using `npx wrangler deploy --dry-run`. The hosted project schema was applied using the Supabase SQL editor as a single transaction; retain the versioned SQL migration as the source of truth. CLI migration history is not automatically populated by a SQL editor execution: do not reapply this migration blindly when first linking the CLI.
+
+Hosted environment is stored in ignored `.env.local`. The previous local public configuration is preserved in ignored `.env.local-backend`; `.env.test` still targets only the local test backend. Do not point the integration test at the hosted project.
+
+Production address: `https://project-payment-planner.skorsengkuang.workers.dev`. Add this exact origin to Supabase Auth URL configuration before testing hosted sign-in. Hosted email needs team-member addresses with Supabase's default mail provider, or a custom SMTP provider for other users.
+
+## Alternative Cloudflare Pages setup
 
 Create a Pages project connected to this GitHub repository. Use `npm run build`, output directory `dist`, and Node.js 22. Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` in preview and production build environments. These are public browser configuration. Use `main` for production and `sprint-1` for branch previews. No separate application server or Cloudflare secret is required by this frontend.
 
