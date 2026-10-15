@@ -2,7 +2,9 @@
 
 Plan fixed-price projects before agreeing to client payment terms. The app supports email/Google sign-in, private project setup, expenses and expected deposit/milestone schedules. Cash forecasting is planned for Sprint 3.
 
-**Live app:** [Project Payment Planner](https://project-payment-planner.skorsengkuang.workers.dev/)
+**Live app (main):** [Project Payment Planner](https://project-payment-planner.skorsengkuang.workers.dev/)
+
+**Sprint 2 preview:** [Try expenses and payment milestones](https://sprint-2-project-payment-planner.skorsengkuang.workers.dev/)
 
 ## Current progress
 

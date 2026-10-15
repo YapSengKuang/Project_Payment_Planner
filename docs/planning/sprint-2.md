@@ -34,6 +34,6 @@ The additive expense and milestone migrations were also applied transactionally 
 
 Google is now enabled in hosted Supabase, but an initial live OAuth request returned Google's redirect_uri_mismatch error. Correct the Google Cloud OAuth client's Authorized redirect URI to exactly `https://mmfltpbbkpugdfypruqg.supabase.co/auth/v1/callback`, then verify an actual Google consent/session/sign-out round trip. See `../google-sign-in.md`.
 
-The branch preview must have public Supabase build variables and an exact allowed callback origin. It may share the hosted backend; frontend preview deployment does not itself create isolated database data. Use synthetic projects for preview testing.
+The branch preview is deployed at https://sprint-2-project-payment-planner.skorsengkuang.workers.dev. Its public Supabase build variables and exact allowed callback origin are configured, and the deployed app shows both sign-in methods. GitHub application CI and Cloudflare build checks passed for `07c0d45`. The preview shares the hosted backend; frontend preview deployment does not itself create isolated database data. Use synthetic projects for preview testing.
 
 Cash forecasting, funding-gap calculations, suggested schedule changes, scenarios, immutable schedule versions and exports remain later sprint work.
