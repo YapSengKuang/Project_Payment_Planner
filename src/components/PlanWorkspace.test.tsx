@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { expect, it, vi } from 'vitest'
 import type { SupabaseClient } from '@supabase/supabase-js'
@@ -17,6 +17,7 @@ it('preserves failed-save inputs, retries, and selects the newly saved immutable
   vi.mocked(saveRevision).mockRejectedValueOnce(new Error('Offline')).mockResolvedValueOnce(saved)
   const user = userEvent.setup(), busy = vi.fn()
   render(<PlanWorkspace client={{} as SupabaseClient} baseline={planFixture} onBusyChange={busy}/>)
+  await waitFor(() => expect(screen.getByLabelText('Revision name')).toBeEnabled())
   await user.type(screen.getByLabelText('Revision name'), 'Original terms')
   await user.click(screen.getByRole('button', { name: 'Save named revision' }))
   expect(await screen.findByRole('alert')).toHaveTextContent('Revision not saved. Offline')
@@ -26,6 +27,17 @@ it('preserves failed-save inputs, retries, and selects the newly saved immutable
   await user.click(screen.getByRole('button', { name: 'Save named revision' }))
   expect(await screen.findByText(/Revision “Original terms” saved/)).toBeInTheDocument()
   expect(screen.getByLabelText('Compare from')).toHaveValue('r1')
+})
+
+it('prevents editing and saving until the revision list finishes loading', async () => {
+  let finish!: (rows: []) => void
+  vi.mocked(listRevisions).mockImplementationOnce(() => new Promise(resolve => { finish = resolve }))
+  render(<PlanWorkspace client={{} as SupabaseClient} baseline={planFixture} onBusyChange={vi.fn()}/>)
+  expect(screen.getByLabelText('Revision name')).toBeDisabled()
+  expect(screen.getByRole('button', { name: 'Save named revision' })).toBeDisabled()
+  expect(screen.getByRole('button', { name: 'Update comparison' })).toBeDisabled()
+  await act(async () => finish([]))
+  expect(screen.getByLabelText('Revision name')).toBeEnabled()
 })
 
 it('reopens a preserved baseline even when the working schedule has changed', async () => {
